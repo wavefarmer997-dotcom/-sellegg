@@ -83,12 +83,49 @@ function initSharedStore() {
   }
 }
 
+function mapAdminProduct(p) {
+  const catMap = {
+    'ไข่ไก่': 'chicken',
+    'ไข่เป็ด': 'duck',
+    'ไข่นกกระทา': 'special',
+    'อื่น ๆ': 'special'
+  };
+  return {
+    id: `admin-${p.id}`,
+    name: p.name,
+    category: catMap[p.category] || 'special',
+    categoryLabel: p.category || 'สินค้าทั่วไป',
+    badge: `คงเหลือ ${p.stock} ชิ้น`,
+    meta: p.description || 'สินค้าคัดพิเศษจากระบบหลังบ้าน EGGIFY Admin',
+    price: Number(p.price) || 0,
+    unit: 'รายการ',
+    eggType: p.category === 'ไข่เป็ด' ? 'white' : p.category === 'ไข่นกกระทา' ? 'mixed' : 'brown'
+  };
+}
+
 function getProducts() {
+  let base = DEFAULT_PRODUCTS;
   try {
-    return JSON.parse(localStorage.getItem('eggify_products')) || DEFAULT_PRODUCTS;
+    base = JSON.parse(localStorage.getItem('eggify_products')) || DEFAULT_PRODUCTS;
   } catch {
-    return DEFAULT_PRODUCTS;
+    base = DEFAULT_PRODUCTS;
   }
+
+  try {
+    const adminRaw = localStorage.getItem('eggify_admin_products');
+    if (adminRaw) {
+      const adminList = JSON.parse(adminRaw);
+      if (Array.isArray(adminList)) {
+        const customAdminItems = adminList
+          .filter((p) => Number(p.id) > 3)
+          .map(mapAdminProduct);
+        return [...base, ...customAdminItems];
+      }
+    }
+  } catch {
+    // fallback to base products
+  }
+  return base;
 }
 
 function getCart() {
@@ -139,6 +176,10 @@ function renderProducts(filterCategory = 'all', searchKeyword = '') {
   if (!grid) return;
 
   const products = getProducts();
+  const allCountBtn = document.querySelector('.cat-pill[data-cat="all"]');
+  if (allCountBtn) {
+    allCountBtn.textContent = `ทั้งหมด (${products.length})`;
+  }
   const filtered = products.filter((item) => {
     const matchCat = filterCategory === 'all' || item.category === filterCategory;
     const matchSearch =
