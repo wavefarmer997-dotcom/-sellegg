@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>สินค้าทั้งหมด (ไข่ไก่ ไข่เป็ด ไข่นกกระทา) | EGGIFY – Fresh Egg Market</title>
+  <meta name="description" content="เลือกซื้อไข่ไก่สด ไข่เป็ดไล่ทุ่ง ไข่นกกระทาปลอดสาร และเซ็ตสุดคุ้มจากฟาร์ม EGGIFY พร้อมดูรายละเอียดสินค้าครบถ้วน" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- 1. TOP PROMOTION BAR -->
+  <div class="top-promo-bar">
+    <div class="container top-promo-inner">
+      <div class="top-promo-message">
+        <span class="promo-pill-new">PRODUCT WEB</span>
+        <span>คัดสรร <strong>ไข่ไก่ • ไข่เป็ด • ไข่นกกระทา</strong> สดใหม่จากฟาร์มทุกเช้า ใช้โค้ด</span>
+        <button type="button" class="top-promo-code" onclick="copyCouponOnProducts('EGGFRESH20', this)">
+          EGGFRESH20
+        </button>
+      </div>
+      <div class="top-promo-links">
+        <span>👨‍🌾 รับผิดชอบโดย: นาย B (ระบบสินค้า)</span>
+        <span class="promo-divider">|</span>
+        <a href="cart.html">ไปหน้าตะกร้าสินค้า →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. HEADER & NAVBAR -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="index.html" class="brand-logo" aria-label="EGGIFY หน้าหลัก">
+        <span class="brand-icon-box" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2B1E16" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c4.97 0 8-3.58 8-8.5C20 7.5 15.5 2 12 2S4 7.5 4 13.5C4 18.42 7.03 22 12 22Z" />
+          </svg>
+        </span>
+        <div class="brand-text-wrap">
+          <span class="brand-name">EGGIFY</span>
+          <span class="brand-sub">Fresh Egg Market</span>
+        </div>
+      </a>
+
+      <nav class="navbar-center" aria-label="เมนูหลัก">
+        <ul class="nav-menu" id="mainNavMenu">
+          <li><a href="index.html" class="nav-link">หน้าหลัก</a></li>
+          <li><a href="products.html" class="nav-link active">สินค้าทั้งหมด</a></li>
+          <li><a href="cart.html" class="nav-link">ตะกร้าสินค้า</a></li>
+          <li><a href="checkout.html" class="nav-link">ชำระเงิน</a></li>
+          <li><a href="login.html" class="nav-link">เข้าสู่ระบบ</a></li>
+          <li>
+            <a href="admin.html" class="nav-link nav-link-admin">
+              <span class="admin-dot"></span>ระบบ Admin
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="cart.html" class="icon-btn" aria-label="ตะกร้าสินค้า" title="ไปหน้าตะกร้าสินค้า">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-count" id="cartCountBadge">0</span>
+        </a>
+
+        <a href="login.html" class="icon-btn js-user-nav-btn" aria-label="บัญชีสมาชิก" title="เข้าสู่ระบบ / สมัครสมาชิก">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+
+        <button type="button" class="icon-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนู">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 3. SUBPAGE HERO (ส่วนหัวหน้าสินค้า โดย นาย B) -->
+    <section class="subpage-hero">
+      <div class="container">
+        <div class="subpage-hero-card">
+          <div>
+            <div class="breadcrumb">
+              <a href="index.html">หน้าหลัก</a>
+              <span>/</span>
+              <strong>สินค้าทั้งหมด (นาย B – Product Web)</strong>
+            </div>
+            <span class="badge-fresh">FARM FRESH CATALOG</span>
+            <h1 class="hero-title" style="font-size:clamp(1.65rem,3vw,2.3rem);margin-top:8px;">
+              เลือกซื้อไข่ไก่ ไข่เป็ด และไข่นกกระทาคุณภาพเยี่ยม
+            </h1>
+            <p class="hero-subtitle" style="margin-top:4px;">
+              คัดขนาดมาตรฐาน สดสะอาดจากฟาร์ม พร้อมดูรายละเอียดโภชนาการและหยิบใส่ตะกร้าได้ทันที
+            </p>
+          </div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="spec-box" style="background:#FFF;min-width:130px;text-align:center;">
+              <small>หมวดหมู่ไข่สด</small>
+              <strong style="font-size:1.15rem;color:var(--brand-orange);">4 หมวดหลัก</strong>
+            </div>
+            <div class="spec-box" style="background:#FFF;min-width:130px;text-align:center;">
+              <small>รายการพร้อมส่ง</small>
+              <strong style="font-size:1.15rem;color:var(--brand-green);" id="heroTotalProducts">10 รายการ</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FILTER, SEARCH & SORT TOOLBAR (ระบบค้นหาและเลือกหมวดหมู่ โดย นาย B) -->
+    <section class="products-section" style="padding-top:10px;">
+      <div class="container">
+        <div class="panel-bento" style="padding:20px 24px;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+            <!-- หมวดหมู่ไข่ไก่ ไข่เป็ด ไข่นกกระทา -->
+            <div class="category-pills" id="categoryFilterBar" role="tablist" aria-label="เลือกหมวดหมู่ไข่">
+              <button type="button" class="cat-pill active" data-cat="all">ทั้งหมด</button>
+              <button type="button" class="cat-pill" data-cat="ไข่ไก่">🥚 ไข่ไก่</button>
+              <button type="button" class="cat-pill" data-cat="ไข่เป็ด">🦆 ไข่เป็ด</button>
+              <button type="button" class="cat-pill" data-cat="ไข่นกกระทา">🐣 ไข่นกกระทา</button>
+              <button type="button" class="cat-pill" data-cat="เซ็ตสุดคุ้ม">🎁 เซ็ตสุดคุ้ม</button>
+            </div>
+
+            <!-- ช่องค้นหาและเรียงลำดับราคา -->
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;flex:1;justify-content:flex-end;min-width:260px;">
+              <input
+                type="search"
+                id="catalogSearchInput"
+                class="form-control"
+                placeholder="ค้นหาชื่อสินค้า เช่น ไข่ไก่เบอร์ 0, ไข่เป็ด, ไข่นกกระทา..."
+                aria-label="ค้นหาสินค้า"
+                style="max-width:310px;border-radius:999px;padding:9px 16px;"
+              />
+              <select id="catalogSortSelect" class="form-control" aria-label="เรียงลำดับสินค้า" style="width:auto;border-radius:999px;padding:9px 16px;">
+                <option value="default">เรียงตาม: แนะนำ</option>
+                <option value="price-asc">ราคา: ต่ำ → สูง</option>
+                <option value="price-desc">ราคา: สูง → ต่ำ</option>
+                <option value="stock-desc">คงเหลือมากที่สุด</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- จำนวนผลลัพธ์ที่พบ -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <p style="font-size:0.9rem;color:var(--text-secondary);" id="catalogResultLabel">กำลังโหลดรายการสินค้า...</p>
+          <a href="cart.html" class="link-arrow">ดูตะกร้าสินค้าของคุณ →</a>
+        </div>
+
+        <!-- 5. PRODUCT CATALOG GRID -->
+        <div class="product-grid" id="catalogProductGrid"></div>
+
+        <!-- 6. EGG COMPARISON GUIDE (ตารางเปรียบเทียบไข่ไก่ ไข่เป็ด ไข่นกกระทา) -->
+        <div class="panel-bento" style="margin-top:44px;background:var(--bg-cream);">
+          <div class="section-header" style="margin-bottom:16px;">
+            <div>
+              <span class="section-eyebrow">EGG NUTRITION & SIZE GUIDE</span>
+              <h2 class="section-title" style="font-size:1.35rem;">ตารางเปรียบเทียบ ไข่ไก่ • ไข่เป็ด • ไข่นกกระทา</h2>
+              <p class="section-desc">ข้อมูลประกอบการตัดสินใจเลือกซื้อไข่ให้เหมาะกับเมนูอาหารของคุณ</p>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;background:#FFF;border-radius:16px;overflow:hidden;">
+              <thead>
+                <tr style="background:#2B1E16;color:#FFF;text-align:left;font-size:0.86rem;">
+                  <th style="padding:14px 16px;">ชนิดของไข่</th>
+                  <th style="padding:14px 16px;">น้ำหนักเฉลี่ย/ฟอง</th>
+                  <th style="padding:14px 16px;">จุดเด่นของเนื้อสัมผัส</th>
+                  <th style="padding:14px 16px;">เมนูแนะนำ</th>
+                </tr>
+              </thead>
+              <tbody style="font-size:0.88rem;">
+                <tr style="border-bottom:1px solid var(--border-subtle);">
+                  <td style="padding:14px 16px;font-weight:700;">🥚 ไข่ไก่สด (เบอร์ 0 / เบอร์ 1 / ออร์แกนิค)</td>
+                  <td style="padding:14px 16px;">65 – 75 กรัม</td>
+                  <td style="padding:14px 16px;">เนื้อนุ่ม ฟู หอมละมุน คาวน้อย</td>
+                  <td style="padding:14px 16px;">ไข่ลวก ไข่เจียว เบเกอรี่ อาหารคลีน</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--border-subtle);">
+                  <td style="padding:14px 16px;font-weight:700;">🦆 ไข่เป็ดไล่ทุ่งสุพรรณบุรี</td>
+                  <td style="padding:14px 16px;">70 – 80 กรัม</td>
+                  <td style="padding:14px 16px;">ไข่แดงลูกใหญ่ สีส้มจัด มันเยิ้มเข้มข้น</td>
+                  <td style="padding:14px 16px;">ไข่ดาวกรอบ ไข่ต้มยางมะตูม ขนมไทย ไข่พะโล้</td>
+                </tr>
+                <tr>
+                  <td style="padding:14px 16px;font-weight:700;">🐣 ไข่นกกระทาปลอดสาร</td>
+                  <td style="padding:14px 16px;">11 – 13 กรัม</td>
+                  <td style="padding:14px 16px;">ขนาดพอดีคำ ย่อยง่าย ธาตุเหล็กและ B12 สูง</td>
+                  <td style="padding:14px 16px;">กระเพาะปลา ขนมครกไข่นกกระทา สลัด เมนูเด็ก</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 7. PRODUCT DETAIL MODAL (ปุ่มดูรายละเอียดสินค้า พร้อมเลือกจำนวน) -->
+  <div class="modal-overlay" id="productDetailModal" onclick="if(event.target===this) closeCatalogModal()">
+    <div class="product-modal-card" role="dialog" aria-modal="true" aria-labelledby="catalogModalTitle">
+      <button type="button" class="modal-close-btn" onclick="closeCatalogModal()" aria-label="ปิดหน้าต่าง">✕</button>
+      <div class="modal-visual-side" id="catalogModalVisual"></div>
+      <div class="modal-info-side" id="catalogModalInfo"></div>
+    </div>
+  </div>
+
+  <!-- 8. FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="brand-logo" style="color:#FFFFFF;">
+            <span class="brand-icon-box" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2B1E16" stroke-width="2.2">
+                <path d="M12 22c4.97 0 8-3.58 8-8.5C20 7.5 15.5 2 12 2S4 7.5 4 13.5C4 18.42 7.03 22 12 22Z" />
+              </svg>
+            </span>
+            <div class="brand-text-wrap">
+              <span>EGGIFY</span>
+              <span class="brand-sub" style="color:rgba(255,255,255,0.65);">Fresh Egg Market</span>
+            </div>
+          </a>
+          <p class="footer-brand-desc">
+            ระบบจัดการรายการสินค้าและรายละเอียด (Product Web) พัฒนาโดย นาย B เชื่อมต่อฐานข้อมูลกลางร่วมกับทุกหน้า
+          </p>
+        </div>
+        <div>
+          <h3 class="footer-heading">เมนูเว็บไซต์ (A–E)</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">หน้าหลัก (Main Web - นาย A)</a></li>
+            <li><a href="products.html">ระบบสินค้า (Product Web - นาย B)</a></li>
+            <li><a href="cart.html">ระบบตะกร้าสินค้า (Cart Web - นาย C)</a></li>
+            <li><a href="checkout.html">ระบบสั่งซื้อ (Checkout Web - นาย D)</a></li>
+            <li><a href="admin.html">ระบบหลังบ้าน (Admin Web - นาย E)</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="footer-heading">กรองตามชนิดไข่</h3>
+          <ul class="footer-links">
+            <li><a href="products.html?cat=ไข่ไก่">ไข่ไก่สดคัดพิเศษ</a></li>
+            <li><a href="products.html?cat=ไข่เป็ด">ไข่เป็ดไล่ทุ่ง</a></li>
+            <li><a href="products.html?cat=ไข่นกกระทา">ไข่นกกระทาปลอดสาร</a></li>
+            <li><a href="products.html?cat=เซ็ตสุดคุ้ม">เซ็ตครอบครัวสุดคุ้ม</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="footer-heading">ศูนย์บริการลูกค้า</h3>
+          <p style="font-size:0.85rem;color:rgba(234,224,213,0.75);">
+            📍 ฟาร์มเอ้กอิฟาย ออร์แกนิค จ.นครปฐม<br />
+            📞 โทร: 02-123-4567<br />
+            🚚 จัดส่งด่วนทุกวัน รับประกันไข่สด 100%
+          </p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 EGGIFY – Fresh Egg Market | ส่วนงานของ นาย B – ระบบสินค้า (Product Web)</span>
+        <span>Minimal Edition × Bento Grid UI</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-notification" id="toastNotification" role="status" aria-live="polite"></div>
+
+  <script src="js/db.js"></script>
+  <script src="js/products.js"></script>
+</body>
+</html>
+

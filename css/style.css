@@ -1486,3 +1486,420 @@ select {
   }
 }
 
+/* ==========================================================================
+   10. SUB WEBS & AUTHENTICATION DESIGN SYSTEM (B, C, D, E + LOGIN)
+   ========================================================================== */
+
+/* Realistic Quail Egg 3D Shading (ไข่นกกระทาเปลือกลายจุด) */
+.egg-quail {
+  width: 36px;
+  height: 44px;
+  background:
+    radial-gradient(circle at 30% 25%, #4A3828 2px, transparent 3px),
+    radial-gradient(circle at 68% 40%, #594331 3px, transparent 4px),
+    radial-gradient(circle at 42% 65%, #3E2D1E 2.5px, transparent 3.5px),
+    radial-gradient(circle at 72% 72%, #594331 2px, transparent 3px),
+    radial-gradient(circle at 24% 58%, #4A3828 1.8px, transparent 2.8px),
+    radial-gradient(circle at 35% 30%, #FAF5EC 0%, #EDE3D2 58%, #CFC0A9 100%);
+  box-shadow:
+    0 6px 12px rgba(48, 32, 16, 0.25),
+    inset -3px -5px 8px rgba(130, 115, 95, 0.35),
+    inset 3px 3px 8px rgba(255, 255, 255, 0.85);
+}
+
+.logged-in-user {
+  background: var(--bg-soft-sage) !important;
+  border-color: rgba(42, 111, 78, 0.3) !important;
+}
+
+/* Sub-page Banner Header */
+.subpage-hero {
+  padding: 28px 0 18px;
+}
+
+.subpage-hero-card {
+  background: linear-gradient(135deg, var(--bg-cream) 0%, #F7EBCD 100%);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
+  padding: 32px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-xs);
+}
+
+.breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.breadcrumb a:hover {
+  color: var(--brand-orange);
+  text-decoration: underline;
+}
+
+/* Product Actions Two-Button Row (สำหรับ นาย B: ดูรายละเอียด + ใส่ตะกร้า) */
+.product-action-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-detail-view {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  padding: 8px 13px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-detail-view:hover {
+  background: var(--bg-cream);
+  border-color: var(--brand-yellow);
+}
+
+/* Product Detail Modal (สำหรับ นาย B) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 19, 13, 0.55);
+  backdrop-filter: blur(5px);
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.product-modal-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  max-width: 760px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-subtle);
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  position: relative;
+  transform: translateY(16px);
+  transition: transform var(--transition-smooth);
+}
+
+.modal-overlay.open .product-modal-card {
+  transform: translateY(0);
+}
+
+.modal-visual-side {
+  background: linear-gradient(155deg, #FFF5D6 0%, #EBC894 100%);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  position: relative;
+}
+
+.modal-info-side {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background: #FFF;
+  cursor: pointer;
+  font-size: 1rem;
+  display: grid;
+  place-items: center;
+  z-index: 5;
+}
+
+.spec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 6px 0;
+}
+
+.spec-box {
+  background: var(--bg-page);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+.spec-box small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.spec-box strong {
+  font-size: 0.86rem;
+  color: var(--text-primary);
+}
+
+/* Cart Page Layout (สำหรับ นาย C - cart.html) */
+.cart-page-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 0.85fr;
+  gap: 24px;
+  align-items: start;
+  padding: 12px 0 56px;
+}
+
+.panel-bento {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.cart-table-row {
+  display: grid;
+  grid-template-columns: 80px 1.6fr 1fr 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.cart-table-row:last-child {
+  border-bottom: none;
+}
+
+.cart-thumb-mini {
+  width: 80px;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transform: scale(0.95);
+}
+
+.cart-thumb-mini .mini-egg-pack {
+  transform: scale(0.55);
+  padding: 10px 14px;
+}
+
+.qty-pill-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-page);
+  border: 1px solid var(--border-subtle);
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.btn-remove-item {
+  border: 1px solid rgba(217, 70, 50, 0.2);
+  background: #FFF5F5;
+  color: #C53030;
+  padding: 7px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-remove-item:hover {
+  background: #C53030;
+  color: #FFF;
+}
+
+.summary-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 0.94rem;
+  color: var(--text-secondary);
+}
+
+.summary-line.total {
+  border-top: 2px dashed var(--border-subtle);
+  margin-top: 8px;
+  padding-top: 16px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* Checkout Page Layout (สำหรับ นาย D - checkout.html) */
+.checkout-page-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.95fr;
+  gap: 24px;
+  align-items: start;
+  padding: 12px 0 56px;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.form-field label {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(43, 30, 22, 0.14);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-size: 0.94rem;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.form-control:focus {
+  background: #FFF;
+  border-color: var(--brand-yellow);
+  box-shadow: 0 0 0 3px rgba(243, 193, 75, 0.22);
+}
+
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.payment-option {
+  border: 2px solid var(--border-subtle);
+  background: var(--bg-page);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all var(--transition-fast);
+}
+
+.payment-option:hover {
+  background: var(--bg-cream);
+}
+
+.payment-option.active {
+  border-color: var(--brand-green);
+  background: var(--bg-soft-sage);
+}
+
+.payment-option input[type="radio"] {
+  margin-top: 4px;
+  accent-color: var(--brand-green);
+}
+
+/* Auth / Login Page Layout (login.html) */
+.auth-page-wrap {
+  padding: 36px 0 64px;
+}
+
+.auth-bento-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--bg-page);
+  padding: 5px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 22px;
+  border: 1px solid var(--border-subtle);
+}
+
+.auth-tab-btn {
+  border: none;
+  background: transparent;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.auth-tab-btn.active {
+  background: var(--text-primary);
+  color: #FFF;
+}
+
+.demo-cred-box {
+  background: var(--bg-cream);
+  border: 1px dashed rgba(217, 107, 39, 0.35);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-top: 18px;
+}
+
+@media (max-width: 920px) {
+  .product-modal-card,
+  .cart-page-grid,
+  .checkout-page-grid,
+  .auth-bento-grid {
+    grid-template-columns: 1fr;
+  }
+  .cart-table-row {
+    grid-template-columns: 64px 1fr;
+    gap: 10px;
+  }
+  .form-grid-2,
+  .payment-methods-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+

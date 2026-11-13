@@ -1,0 +1,13 @@
+{
+  "name": "eggify-fresh-egg-market",
+  "version": "2.0.0",
+  "description": "EGGIFY – Fresh Egg Market (ระบบขายไข่ออนไลน์ครบวงจร A-E พร้อมระบบล็อกอินและฐานข้อมูล SQLite)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}
+

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EGGIFY | Admin Dashboard</title>
+  <title>EGGIFY | Admin Dashboard (นาย E – ระบบหลังบ้าน & ทดสอบระบบ)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -17,18 +17,22 @@
         <span><strong>EGGIFY</strong><small>ADMIN PANEL</small></span>
       </a>
 
-      <div class="side-label">เมนูหลัก</div>
+      <div class="side-label">เมนูจัดการระบบ (นาย E)</div>
       <nav class="nav-menu">
-        <button class="nav-link active" data-section="dashboard"><span>▦</span> ภาพรวม</button>
+        <button class="nav-link active" data-section="dashboard"><span>▦</span> ภาพรวม & ยอดขาย</button>
         <button class="nav-link" data-section="products"><span>🥚</span> จัดการสินค้า</button>
         <button class="nav-link" data-section="orders"><span>🧾</span> คำสั่งซื้อ</button>
+        <button class="nav-link" data-section="qa"><span>🧪</span> ทดสอบการเชื่อมโยง</button>
         <a class="nav-link" href="index.html" style="text-decoration:none;"><span>🏠</span> กลับหน้าร้านหลัก</a>
       </nav>
 
       <div class="sidebar-bottom">
         <div class="profile-mini">
-          <div class="avatar">A</div>
-          <div><strong>ผู้ดูแลร้าน</strong><small>Administrator</small></div>
+          <div class="avatar" id="adminSidebarAvatar">E</div>
+          <div>
+            <strong id="adminSidebarName">นาย E · ผู้ดูแลร้าน</strong>
+            <small id="adminSidebarRole">Admin & System QA</small>
+          </div>
         </div>
         <p class="sidebar-note">EGGIFY · Fresh Egg Market</p>
       </div>
@@ -38,13 +42,14 @@
       <header class="topbar">
         <button class="mobile-menu" id="mobileMenu" aria-label="เปิดเมนู">☰</button>
         <div>
-          <p class="eyebrow">FRESH EGG MARKET</p>
-          <h1 id="pageTitle">ภาพรวมร้านค้า</h1>
+          <p class="eyebrow">FRESH EGG MARKET · ADMIN WEB (นาย E)</p>
+          <h1 id="pageTitle">ภาพรวมร้านค้าและยอดขาย</h1>
         </div>
         <div class="topbar-right">
           <a href="index.html" class="secondary-button" style="text-decoration:none;padding:7px 12px;font-size:11px;">← หน้าร้านหลัก</a>
-          <span class="status-dot"></span><span class="online-text">ระบบพร้อมใช้งาน</span>
-          <div class="top-avatar">A</div>
+          <a href="login.html" class="secondary-button" style="text-decoration:none;padding:7px 12px;font-size:11px;">🔐 บัญชีผู้ใช้</a>
+          <span class="status-dot"></span><span class="online-text" id="dbModeBadge">ฐานข้อมูลพร้อมใช้งาน</span>
+          <div class="top-avatar" id="adminTopAvatar">E</div>
         </div>
       </header>
 
@@ -52,9 +57,9 @@
       <section class="page-section active" id="dashboardSection">
         <div class="welcome-card">
           <div>
-            <span class="welcome-tag">ยินดีต้อนรับกลับมา 👋</span>
-            <h2>จัดการร้านไข่ของคุณ<br>ได้ง่ายในหน้าเดียว</h2>
-            <p>ตรวจสอบสินค้า คำสั่งซื้อ และยอดขายของร้าน EGGIFY</p>
+            <span class="welcome-tag">ยินดีต้อนรับกลับมา 👋 (ส่วนงาน นาย E – Admin Web)</span>
+            <h2>จัดการร้านไข่ ตรวจสอบยอดขาย<br>และทดสอบระบบครบในหน้าเดียว</h2>
+            <p>ข้อมูลสินค้าและคำสั่งซื้อซิงค์กับหน้า index.html, products.html, cart.html และ checkout.html อัตโนมัติ</p>
           </div>
           <div class="welcome-egg" aria-hidden="true">🥚</div>
         </div>
@@ -70,7 +75,7 @@
           </article>
           <article class="stat-card">
             <div class="stat-top"><span>ยอดขายรวม</span><span class="stat-icon green">฿</span></div>
-            <strong id="statSales">฿0</strong><small>จากคำสั่งซื้อที่บันทึกไว้</small>
+            <strong id="statSales">฿0</strong><small id="statSalesSub">จากคำสั่งซื้อทั้งหมด</small>
           </article>
           <article class="stat-card">
             <div class="stat-top"><span>รอดำเนินการ</span><span class="stat-icon orange">⏳</span></div>
@@ -86,15 +91,16 @@
             </div>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>เลขที่คำสั่งซื้อ</th><th>ลูกค้า</th><th>ยอดรวม</th><th>สถานะ</th></tr></thead>
+                <thead><tr><th>เลขที่คำสั่งซื้อ</th><th>ลูกค้า</th><th>วิธีชำระเงิน</th><th>ยอดรวม</th><th>สถานะ</th></tr></thead>
                 <tbody id="recentOrders"></tbody>
               </table>
             </div>
           </article>
           <article class="panel quick-panel">
             <div class="panel-heading"><div><p class="eyebrow">QUICK ACTION</p><h3>จัดการด่วน</h3></div></div>
-            <button class="quick-action" data-go="products"><span class="quick-icon">＋</span><span><strong>เพิ่มสินค้าใหม่</strong><small>เพิ่มไข่ชนิดใหม่เข้าสู่ร้าน</small></span><b>→</b></button>
-            <button class="quick-action" data-go="orders"><span class="quick-icon blue-bg">▤</span><span><strong>ตรวจสอบคำสั่งซื้อ</strong><small>ดูและอัปเดตสถานะคำสั่งซื้อ</small></span><b>→</b></button>
+            <button class="quick-action" data-go="products"><span class="quick-icon">＋</span><span><strong>เพิ่ม / แก้ไขสินค้า</strong><small>อัปเดตไข่ไก่ ไข่เป็ด ไข่นกกระทา</small></span><b>→</b></button>
+            <button class="quick-action" data-go="orders"><span class="quick-icon blue-bg">▤</span><span><strong>ตรวจสอบคำสั่งซื้อ</strong><small>ดูและอัปเดตสถานะการจัดส่ง</small></span><b>→</b></button>
+            <button class="quick-action" data-go="qa"><span class="quick-icon" style="background:#e8f4e9;color:#2a6f4e;">🧪</span><span><strong>ทดสอบการเชื่อมโยงทุกหน้า</strong><small>ตรวจเช็คการทำงาน A–E และฐานข้อมูล</small></span><b>→</b></button>
           </article>
         </div>
       </section>
@@ -102,11 +108,11 @@
       <!-- PRODUCTS -->
       <section class="page-section" id="productsSection">
         <div class="section-intro">
-          <div><p class="eyebrow">PRODUCT MANAGEMENT</p><h2>จัดการสินค้า</h2><p>เพิ่ม แก้ไข หรือลบรายการสินค้าภายในร้าน</p></div>
+          <div><p class="eyebrow">PRODUCT MANAGEMENT</p><h2>จัดการสินค้า</h2><p>เพิ่ม แก้ไข หรือลบรายการสินค้า (ซิงค์กับหน้า products.html และ index.html ทันที)</p></div>
           <button class="primary-button" id="addProductBtn">＋ เพิ่มสินค้า</button>
         </div>
         <div class="toolbar">
-          <input type="search" id="productSearch" placeholder="ค้นหาชื่อสินค้า..." aria-label="ค้นหาสินค้า">
+          <input type="search" id="productSearch" placeholder="ค้นหาชื่อสินค้า หรือหมวดหมู่..." aria-label="ค้นหาสินค้า">
           <span class="muted" id="productCount">0 รายการ</span>
         </div>
         <div class="product-grid" id="productGrid"></div>
@@ -116,10 +122,10 @@
       <!-- ORDERS -->
       <section class="page-section" id="ordersSection">
         <div class="section-intro">
-          <div><p class="eyebrow">ORDER MANAGEMENT</p><h2>คำสั่งซื้อ</h2><p>ตรวจสอบข้อมูลลูกค้าและอัปเดตสถานะการจัดส่ง</p></div>
+          <div><p class="eyebrow">ORDER MANAGEMENT</p><h2>คำสั่งซื้อและยอดขาย</h2><p>ตรวจสอบข้อมูลลูกค้าจากหน้า checkout.html และอัปเดตสถานะการจัดส่ง</p></div>
         </div>
         <div class="toolbar">
-          <input type="search" id="orderSearch" placeholder="ค้นหาเลขที่คำสั่งซื้อหรือชื่อลูกค้า..." aria-label="ค้นหาคำสั่งซื้อ">
+          <input type="search" id="orderSearch" placeholder="ค้นหาเลขที่คำสั่งซื้อ ชื่อลูกค้า หรือเบอร์โทร..." aria-label="ค้นหาคำสั่งซื้อ">
           <select id="statusFilter" aria-label="กรองสถานะ">
             <option value="all">ทุกสถานะ</option>
             <option value="รอดำเนินการ">รอดำเนินการ</option>
@@ -130,7 +136,7 @@
         <div class="panel">
           <div class="table-wrap">
             <table class="orders-table">
-              <thead><tr><th>เลขที่คำสั่งซื้อ</th><th>ลูกค้า</th><th>เบอร์โทร</th><th>ที่อยู่</th><th>ยอดรวม</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+              <thead><tr><th>เลขที่คำสั่งซื้อ</th><th>ลูกค้า</th><th>เบอร์โทร</th><th>ที่อยู่จัดส่ง</th><th>ชำระเงิน</th><th>ยอดรวม</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
               <tbody id="ordersTable"></tbody>
             </table>
           </div>
@@ -138,7 +144,86 @@
         </div>
       </section>
 
-      <footer class="footer">© 2026 EGGIFY · Fresh Egg Market <span>Admin Dashboard</span></footer>
+      <!-- QA & SYSTEM INTEGRATION TEST (ส่วนงานทดสอบของ นาย E) -->
+      <section class="page-section" id="qaSection">
+        <div class="section-intro">
+          <div>
+            <p class="eyebrow">SYSTEM INTEGRATION & QA TESTING (นาย E)</p>
+            <h2>ทดสอบการเชื่อมโยงทุกหน้าและตรวจสอบระบบ</h2>
+            <p>เครื่องมือตรวจสอบการเชื่อมโยงระหว่างเว็บของสมาชิก A, B, C, D, E ระบบล็อกอิน และฐานข้อมูล</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="primary-button" id="runQaTestBtn">▶ รันการทดสอบระบบทั้งหมด</button>
+            <button type="button" class="secondary-button" id="resetDemoDataBtn">🔄 รีเซ็ตข้อมูลเริ่มต้น</button>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:16px;">
+          <div class="panel-heading">
+            <div><p class="eyebrow">PAGE LINK VERIFICATION</p><h3>1. ตรวจสอบลิงก์เชื่อมโยงของสมาชิกทั้ง 5 คน + ระบบล็อกอิน</h3></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>ผู้รับผิดชอบ</th><th>บทบาท / ระบบ</th><th>ไฟล์หน้าเว็บ</th><th>สถานะการเชื่อมโยง</th><th>เปิดหน้าเว็บเพื่อทดสอบ</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>นาย A</strong></td>
+                  <td>หัวหน้าทีม / Main Web (Header, Navbar, Footer, Bento Grid, โปรโมชั่น)</td>
+                  <td><code>index.html</code></td>
+                  <td><span class="status done">✓ เชื่อมต่อสมบูรณ์</span></td>
+                  <td><a href="index.html" class="secondary-button" style="text-decoration:none;padding:5px 10px;">เปิด index.html →</a></td>
+                </tr>
+                <tr>
+                  <td><strong>นาย B</strong></td>
+                  <td>Product Web (แสดงไข่ไก่ ไข่เป็ด ไข่นกกระทา, ดูรายละเอียด, ค้นหา/กรอง)</td>
+                  <td><code>products.html</code></td>
+                  <td><span class="status done">✓ เชื่อมต่อสมบูรณ์</span></td>
+                  <td><a href="products.html" class="secondary-button" style="text-decoration:none;padding:5px 10px;">เปิด products.html →</a></td>
+                </tr>
+                <tr>
+                  <td><strong>นาย C</strong></td>
+                  <td>Cart Web (เพิ่ม/ลดจำนวน, ลบสินค้า, คำนวณยอดรวมอัตโนมัติ)</td>
+                  <td><code>cart.html</code></td>
+                  <td><span class="status done">✓ เชื่อมต่อสมบูรณ์</span></td>
+                  <td><a href="cart.html" class="secondary-button" style="text-decoration:none;padding:5px 10px;">เปิด cart.html →</a></td>
+                </tr>
+                <tr>
+                  <td><strong>นาย D</strong></td>
+                  <td>Checkout Web (ฟอร์มชื่อ/เบอร์โทร/ที่อยู่, เลือกวิธีชำระเงิน, สรุปใบสั่งซื้อ)</td>
+                  <td><code>checkout.html</code></td>
+                  <td><span class="status done">✓ เชื่อมต่อสมบูรณ์</span></td>
+                  <td><a href="checkout.html" class="secondary-button" style="text-decoration:none;padding:5px 10px;">เปิด checkout.html →</a></td>
+                </tr>
+                <tr>
+                  <td><strong>นาย E</strong></td>
+                  <td>Admin Web (เพิ่ม/ลบ/แก้ไขสินค้า, ดูคำสั่งซื้อ, ยอดขาย, ทดสอบระบบ)</td>
+                  <td><code>admin.html</code></td>
+                  <td><span class="status done">✓ หน้าปัจจุบัน</span></td>
+                  <td><span class="muted">กำลังใช้งานหน้านี้</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Auth & DB</strong></td>
+                  <td>ระบบล็อกอิน / สมัครสมาชิก + ฐานข้อมูล SQLite & Cloud Storage</td>
+                  <td><code>login.html</code>, <code>server.js</code></td>
+                  <td><span class="status done">✓ เชื่อมต่อสมบูรณ์</span></td>
+                  <td><a href="login.html" class="secondary-button" style="text-decoration:none;padding:5px 10px;">เปิด login.html →</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">AUTOMATED DIAGNOSTICS</p><h3>2. ผลการทดสอบฐานข้อมูลและฟังก์ชันหลัก (Automated Check)</h3></div>
+          </div>
+          <div id="qaResultsList" style="display:grid;gap:10px;"></div>
+        </div>
+      </section>
+
+      <footer class="footer">© 2026 EGGIFY · Fresh Egg Market <span>Admin Dashboard (นาย E – ระบบหลังบ้าน & ทดสอบระบบ)</span></footer>
     </main>
   </div>
 
@@ -155,7 +240,11 @@
         </div>
         <label>หมวดหมู่
           <select id="productCategory">
-            <option>ไข่ไก่</option><option>ไข่เป็ด</option><option>ไข่นกกระทา</option><option>อื่น ๆ</option>
+            <option value="ไข่ไก่">ไข่ไก่</option>
+            <option value="ไข่เป็ด">ไข่เป็ด</option>
+            <option value="ไข่นกกระทา">ไข่นกกระทา</option>
+            <option value="เซ็ตสุดคุ้ม">เซ็ตสุดคุ้ม</option>
+            <option value="อื่น ๆ">อื่น ๆ</option>
           </select>
         </label>
         <label>รายละเอียด<input id="productDescription" type="text" placeholder="รายละเอียดสินค้า (ไม่บังคับ)" maxlength="120"></label>
@@ -165,7 +254,7 @@
   </div>
 
   <div class="toast" id="toast" role="status"></div>
+  <script src="js/db.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>
-

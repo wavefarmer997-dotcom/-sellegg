@@ -53,26 +53,26 @@
         </div>
       </a>
 
-      <!-- เมนูหลักเชื่อมโยง Main Web และ 5 Sub Web ของสมาชิกในทีม (บรรทัดเดียวสวยงาม ไม่ตัดคำ) -->
+      <!-- เมนูหลักเชื่อมโยง Main Web และ Sub Webs ของสมาชิกทั้ง 5 คน + ระบบล็อกอิน -->
       <nav class="navbar-center" aria-label="เมนูหลัก">
         <ul class="nav-menu" id="mainNavMenu">
           <li>
             <a href="index.html" class="nav-link active">หน้าหลัก</a>
           </li>
           <li>
-            <a href="products.html" class="nav-link" title="Sub Web 1: หน้าสินค้าทั้งหมด">สินค้าทั้งหมด</a>
+            <a href="products.html" class="nav-link" title="นาย B: ระบบสินค้า (Product Web)">สินค้าทั้งหมด</a>
           </li>
           <li>
-            <a href="#promotions" class="nav-link">โปรโมชั่น</a>
+            <a href="cart.html" class="nav-link" title="นาย C: ระบบตะกร้าสินค้า (Cart Web)">ตะกร้าสินค้า</a>
           </li>
           <li>
-            <a href="cart.html" class="nav-link" title="Sub Web 2: หน้าตะกร้าและชำระเงิน">ตะกร้า & ชำระเงิน</a>
+            <a href="checkout.html" class="nav-link" title="นาย D: ระบบสั่งซื้อ (Checkout Web)">ชำระเงิน</a>
           </li>
           <li>
-            <a href="about.html" class="nav-link" title="Sub Web 4: เกี่ยวกับฟาร์มและติดต่อเรา">เกี่ยวกับฟาร์ม</a>
+            <a href="login.html" class="nav-link" title="ระบบล็อกอินและสมาชิก">เข้าสู่ระบบ</a>
           </li>
           <li>
-            <a href="admin.html" class="nav-link nav-link-admin" title="Sub Web 5: ระบบจัดการหลังบ้าน Admin">
+            <a href="admin.html" class="nav-link nav-link-admin" title="นาย E: ระบบหลังบ้าน (Admin Web)">
               <span class="admin-dot"></span>ระบบ Admin
             </a>
           </li>
@@ -97,7 +97,7 @@
           <span class="cart-count" id="cartCountBadge">0</span>
         </button>
 
-        <a href="member.html" class="icon-btn" aria-label="บัญชีสมาชิก (Sub Web 3)" title="Sub Web 3: สมาชิก / ติดตามคำสั่งซื้อ">
+        <a href="login.html" class="icon-btn js-user-nav-btn" aria-label="เข้าสู่ระบบ / บัญชีสมาชิก" title="เข้าสู่ระบบ / สมัครสมาชิก">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
@@ -196,10 +196,10 @@
 
             <div class="bento-card-footer">
               <div>
-                <span class="price-highlight">เริ่มต้น ฿75</span>
+                <span class="price-highlight">เริ่มต้น ฿65</span>
                 <span class="price-unit">/ แพ็ก 10 ฟอง</span>
               </div>
-              <button type="button" class="link-arrow" onclick="addToCart('egg-03')">
+              <button type="button" class="link-arrow" onclick="addToCart('egg-05')">
                 <span>หยิบใส่ตะกร้า</span>
                 <span aria-hidden="true">→</span>
               </button>
@@ -265,7 +265,7 @@
                 <span class="price-highlight">฿215</span>
                 <span class="price-unit" style="text-decoration:line-through;">฿254</span>
               </div>
-              <button type="button" class="btn-sage-pill" onclick="addToCart('egg-06')">
+              <button type="button" class="btn-sage-pill" onclick="addToCart('egg-10')">
                 สั่งเซ็ตสุดคุ้ม →
               </button>
             </div>
@@ -281,7 +281,7 @@
             </div>
             <div class="bento-card-footer">
               <span class="price-unit">— คุณพิมพ์ชนก (ลูกค้าประจำ)</span>
-              <a href="about.html" class="link-arrow">ดูรีวิวเพิ่ม →</a>
+              <a href="products.html" class="link-arrow">ดูสินค้าทั้งหมด →</a>
             </div>
           </article>
 
@@ -403,30 +403,30 @@
         </div>
 
         <div class="category-pills" role="tablist" aria-label="หมวดหมู่ไข่">
-          <button type="button" class="cat-pill active" data-cat="all">ทั้งหมด (6)</button>
-          <button type="button" class="cat-pill" data-cat="organic">ไข่ออร์แกนิค</button>
-          <button type="button" class="cat-pill" data-cat="chicken">ไข่ไก่สดคัดไซส์</button>
-          <button type="button" class="cat-pill" data-cat="duck">ไข่เป็ดไล่ทุ่ง</button>
-          <button type="button" class="cat-pill" data-cat="special">ไข่แปรรูป & เซ็ตสุดคุ้ม</button>
+          <button type="button" class="cat-pill active" data-cat="all">ทั้งหมด (10)</button>
+          <button type="button" class="cat-pill" data-cat="chicken">🥚 ไข่ไก่</button>
+          <button type="button" class="cat-pill" data-cat="duck">🦆 ไข่เป็ด</button>
+          <button type="button" class="cat-pill" data-cat="quail">🐣 ไข่นกกระทา</button>
+          <button type="button" class="cat-pill" data-cat="special">🎁 เซ็ตสุดคุ้ม</button>
         </div>
 
-        <!-- ตารางแสดงสินค้า (Render ด้วย JavaScript จาก Shared LocalStorage) -->
+        <!-- ตารางแสดงสินค้า (Render ด้วย JavaScript จากฐานข้อมูลกลาง EggifyDB) -->
         <div class="product-grid" id="productGrid"></div>
       </div>
     </section>
 
     <!-- ===================================================================
-         6. TEAM INTEGRATION HUB (แผงตรวจสอบและรวมโค้ดของสมาชิกทุกคน - นาย A)
+         6. TEAM INTEGRATION HUB (แผงตรวจสอบและรวมโค้ดของสมาชิกทุกคน A - E)
          =================================================================== -->
     <section class="integration-section" id="team-hub">
       <div class="container">
         <div class="integration-box">
           <div class="section-header" style="margin-bottom:8px;">
             <div>
-              <span class="section-eyebrow">PROJECT ARCHITECTURE • 1 MAIN WEB + 5 SUB WEBS</span>
-              <h2 class="section-title">ศูนย์รวมโครงสร้างเว็บไซต์ (สำหรับหัวหน้าทีม นาย A)</h2>
+              <span class="section-eyebrow">PROJECT ARCHITECTURE • TEAM A – E + AUTH & DATABASE</span>
+              <h2 class="section-title">ศูนย์รวมโครงสร้างเว็บไซต์ครบวงจร (Main Web + Sub Webs)</h2>
               <p class="section-desc">
-                ตารางเชื่อมโยงหน้าเว็บทั้งหมดของสมาชิกในกลุ่ม ใช้ CSS ชุดเดียวกัน (<code>css/style.css</code>) และแชร์ข้อมูลตะกร้า/สินค้าผ่าน <code>localStorage</code>
+                ตารางเชื่อมโยงหน้าเว็บทั้งหมดของสมาชิกในกลุ่ม (นาย A – นาย E) พร้อมระบบล็อกอินและฐานข้อมูล SQLite & Cloud LocalStorage
               </p>
             </div>
           </div>
@@ -434,50 +434,50 @@
           <div class="subweb-grid">
             <!-- นาย A -->
             <a href="index.html" class="subweb-card active-role">
-              <span class="subweb-role-tag">★ นาย A (หัวหน้าทีม / Main Web)</span>
-              <h3 class="subweb-title">หน้าหลัก & โครงสร้างรวม (Main Web)</h3>
-              <p class="subweb-desc">Header, Navbar, Footer, แบนเนอร์โปรโมชั่น, Bento Grid หน้าหลัก และรวมโค้ดสมาชิก</p>
+              <span class="subweb-role-tag">★ นาย A • หัวหน้าทีม / Main Web</span>
+              <h3 class="subweb-title">เว็บไซต์หลัก & ภาพรวม (Main Web)</h3>
+              <p class="subweb-desc">เขียนหน้า index.html, ออกแบบ Header/Navbar/Footer, แบนเนอร์โปรโมชั่น, Bento Grid และรวมโค้ดทุกคน</p>
               <span class="subweb-file">ไฟล์: index.html (หน้านี้)</span>
             </a>
 
-            <!-- Sub Web 1 -->
+            <!-- นาย B -->
             <a href="products.html" class="subweb-card">
-              <span class="subweb-role-tag">สมาชิก B • Sub Web 1</span>
-              <h3 class="subweb-title">หน้าสินค้าทั้งหมด & รายละเอียดไข่</h3>
-              <p class="subweb-desc">แสดงหมวดหมู่ไข่ไก่ ไข่เป็ด ไข่ออร์แกนิค ตารางเปรียบเทียบเบอร์ไข่ และรีวิวรายสินค้า</p>
+              <span class="subweb-role-tag">นาย B • ระบบสินค้า (Product Web)</span>
+              <h3 class="subweb-title">จัดการรายการสินค้า & รายละเอียด</h3>
+              <p class="subweb-desc">แสดงรายการไข่ไก่ ไข่เป็ด ไข่นกกระทา รูปและราคาสินค้า ปุ่มดูรายละเอียดสินค้า ระบบค้นหาและเลือกหมวดหมู่</p>
               <span class="subweb-file">ไฟล์เชื่อมโยง: products.html →</span>
             </a>
 
-            <!-- Sub Web 2 -->
+            <!-- นาย C -->
             <a href="cart.html" class="subweb-card">
-              <span class="subweb-role-tag">สมาชิก C • Sub Web 2</span>
-              <h3 class="subweb-title">หน้าตะกร้าสินค้า & ชำระเงิน</h3>
-              <p class="subweb-desc">คำนวณราคาสินค้า ใช้คูปองส่วนลด แจ้งโอนเงิน และเลือกเวลาจัดส่ง</p>
+              <span class="subweb-role-tag">นาย C • ระบบตะกร้าสินค้า (Cart Web)</span>
+              <h3 class="subweb-title">จัดการตะกร้า & คำนวณราคาอัตโนมัติ</h3>
+              <p class="subweb-desc">เพิ่มสินค้าลงตะกร้า เพิ่มและลดจำนวนสินค้า ลบสินค้าออกจากตะกร้า และคำนวณยอดรวมพร้อมคูปองอัตโนมัติ</p>
               <span class="subweb-file">ไฟล์เชื่อมโยง: cart.html →</span>
             </a>
 
-            <!-- Sub Web 3 -->
-            <a href="member.html" class="subweb-card">
-              <span class="subweb-role-tag">สมาชิก D • Sub Web 3</span>
-              <h3 class="subweb-title">ระบบสมาชิก & ติดตามคำสั่งซื้อ</h3>
-              <p class="subweb-desc">เข้าสู่ระบบ สมัครสมาชิก สะสมแต้มแลกไข่ฟรี และเช็คสถานะการจัดส่ง</p>
-              <span class="subweb-file">ไฟล์เชื่อมโยง: member.html →</span>
+            <!-- นาย D -->
+            <a href="checkout.html" class="subweb-card">
+              <span class="subweb-role-tag">นาย D • ระบบสั่งซื้อ (Checkout Web)</span>
+              <h3 class="subweb-title">รับข้อมูลลูกค้า & ชำระเงิน</h3>
+              <p class="subweb-desc">แบบฟอร์มชื่อและเบอร์โทรลูกค้า กรอกที่อยู่สำหรับจัดส่ง เลือกวิธีชำระเงิน และแสดงสรุปรายการสั่งซื้อ</p>
+              <span class="subweb-file">ไฟล์เชื่อมโยง: checkout.html →</span>
             </a>
 
-            <!-- Sub Web 4 -->
-            <a href="about.html" class="subweb-card">
-              <span class="subweb-role-tag">สมาชิก E • Sub Web 4</span>
-              <h3 class="subweb-title">เรื่องราวฟาร์ม & ติดต่อเรา</h3>
-              <p class="subweb-desc">มาตรฐานฟาร์มไก่ไข่ GAP บทความคุณค่าทางโภชนาการ และฟอร์มติดต่อสอบถาม</p>
-              <span class="subweb-file">ไฟล์เชื่อมโยง: about.html →</span>
-            </a>
-
-            <!-- Sub Web 5 -->
+            <!-- นาย E -->
             <a href="admin.html" class="subweb-card">
-              <span class="subweb-role-tag">สมาชิก F • Sub Web 5</span>
-              <h3 class="subweb-title">ระบบ Admin หลังบ้าน</h3>
-              <p class="subweb-desc">เพิ่ม ลบ แก้ไขสินค้า อัปเดตสต็อกแผงไข่ และตรวจสอบรายการคำสั่งซื้อลูกค้า</p>
+              <span class="subweb-role-tag">นาย E • ระบบหลังบ้าน (Admin Web)</span>
+              <h3 class="subweb-title">จัดการข้อมูล & ทดสอบระบบ</h3>
+              <p class="subweb-desc">เพิ่ม ลบ แก้ไขสินค้า ดูรายการคำสั่งซื้อ ตรวจสอบยอดขาย และระบบทดสอบการเชื่อมโยงทุกหน้า</p>
               <span class="subweb-file">ไฟล์เชื่อมโยง: admin.html →</span>
+            </a>
+
+            <!-- ระบบล็อกอินและฐานข้อมูล -->
+            <a href="login.html" class="subweb-card">
+              <span class="subweb-role-tag">🔐 ระบบล็อกอิน & ฐานข้อมูลออนไลน์</span>
+              <h3 class="subweb-title">เข้าสู่ระบบ / สมัครสมาชิก & ประวัติสั่งซื้อ</h3>
+              <p class="subweb-desc">ล็อกอินผู้ดูแลระบบและลูกค้า เชื่อมต่อฐานข้อมูล SQLite (server.js) และ Cloud LocalStorage</p>
+              <span class="subweb-file">ไฟล์เชื่อมโยง: login.html →</span>
             </a>
           </div>
         </div>
@@ -510,20 +510,20 @@
           <div class="footer-badges">
             <span class="footer-pill">Organic 100%</span>
             <span class="footer-pill">GAP Standard</span>
-            <span class="footer-pill">Bento Grid UI</span>
+            <span class="footer-pill">SQLite + Online DB</span>
           </div>
         </div>
 
         <!-- คอลัมน์ 2: เมนูเว็บไซต์หลัก & Sub Web -->
         <div>
-          <h3 class="footer-heading">โครงสร้างหน้าเว็บ</h3>
+          <h3 class="footer-heading">โครงสร้างหน้าเว็บ (A–E)</h3>
           <ul class="footer-links">
             <li><a href="index.html">หน้าหลัก (Main Web - นาย A)</a></li>
-            <li><a href="products.html">สินค้าทั้งหมด (Sub Web 1)</a></li>
-            <li><a href="cart.html">ตะกร้าและชำระเงิน (Sub Web 2)</a></li>
-            <li><a href="member.html">ระบบสมาชิก (Sub Web 3)</a></li>
-            <li><a href="about.html">เกี่ยวกับฟาร์ม (Sub Web 4)</a></li>
-            <li><a href="admin.html">ระบบจัดการ Admin (Sub Web 5)</a></li>
+            <li><a href="products.html">ระบบสินค้า (Product Web - นาย B)</a></li>
+            <li><a href="cart.html">ระบบตะกร้าสินค้า (Cart Web - นาย C)</a></li>
+            <li><a href="checkout.html">ระบบสั่งซื้อ (Checkout Web - นาย D)</a></li>
+            <li><a href="admin.html">ระบบหลังบ้าน (Admin Web - นาย E)</a></li>
+            <li><a href="login.html">เข้าสู่ระบบ / สมัครสมาชิก</a></li>
           </ul>
         </div>
 
@@ -531,10 +531,10 @@
         <div>
           <h3 class="footer-heading">หมวดหมู่ไข่ยอดนิยม</h3>
           <ul class="footer-links">
-            <li><a href="#featured-products">ไข่ไก่สดออร์แกนิค Free-Range</a></li>
-            <li><a href="#featured-products">ไข่ไก่คัดพิเศษ เบอร์ 0 ยกแผง</a></li>
-            <li><a href="#featured-products">ไข่เป็ดไล่ทุ่งสุพรรณบุรี</a></li>
-            <li><a href="#featured-products">ไข่ไก่เสริม Omega-3</a></li>
+            <li><a href="products.html?cat=chicken">ไข่ไก่สดออร์แกนิค & เบอร์ 0</a></li>
+            <li><a href="products.html?cat=duck">ไข่เป็ดไล่ทุ่งสุพรรณบุรี</a></li>
+            <li><a href="products.html?cat=quail">ไข่นกกระทาสดปลอดสาร</a></li>
+            <li><a href="products.html?cat=special">ชุดครอบครัวอิ่มคุ้ม Mixed Pack</a></li>
             <li><a href="#promotions">คูปองและโปรโมชั่นประจำเดือน</a></li>
           </ul>
         </div>
@@ -571,7 +571,7 @@
     <div class="drawer-header">
       <div>
         <h2 style="font-size:1.15rem;font-weight:700;">🛒 ตะกร้าไข่สดของคุณ</h2>
-        <p style="font-size:0.78rem;color:var(--text-secondary);">ข้อมูลเชื่อมต่อไปยังหน้า cart.html อัตโนมัติ</p>
+        <p style="font-size:0.78rem;color:var(--text-secondary);">ข้อมูลเชื่อมต่อไปยังหน้า cart.html และ checkout.html</p>
       </div>
       <button type="button" class="icon-btn" onclick="toggleCartDrawer(false)" aria-label="ปิดตะกร้า">✕</button>
     </div>
@@ -585,18 +585,28 @@
       </div>
       <div style="display:grid;gap:8px;">
         <a href="cart.html" class="btn-sage-pill" style="justify-content:center;padding:12px;background:var(--brand-green);color:#fff;">
-          ไปหน้าชำระเงิน (cart.html) →
+          ไปหน้าตะกร้าสินค้า (cart.html) →
         </a>
-        <button type="button" class="btn-outline-pill" style="justify-content:center;" onclick="toggleCartDrawer(false)">
-          เลือกซื้อสินค้าต่อ
-        </button>
+        <a href="checkout.html" class="btn-outline-pill" style="justify-content:center;">
+          สั่งซื้อและชำระเงินทันที (checkout.html) →
+        </a>
       </div>
     </div>
   </aside>
 
+  <!-- Modal ดูรายละเอียดสินค้า -->
+  <div class="modal-overlay" id="productDetailModal" onclick="if(event.target===this) closeProductDetail()">
+    <div class="product-modal-card" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+      <button type="button" class="modal-close-btn" onclick="closeProductDetail()" aria-label="ปิด">✕</button>
+      <div class="modal-visual-side" id="detailModalVisual"></div>
+      <div class="modal-info-side" id="detailModalInfo"></div>
+    </div>
+  </div>
+
   <!-- Toast แจ้งเตือน -->
   <div class="toast-notification" id="toastNotification" role="status" aria-live="polite"></div>
 
+  <script src="js/db.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

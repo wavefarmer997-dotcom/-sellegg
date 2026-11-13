@@ -1,191 +1,30 @@
 /**
- * EGGIFY – Fresh Egg Market | Main JavaScript
+ * EGGIFY – Fresh Egg Market | Main JavaScript (js/main.js)
  * ผู้รับผิดชอบ: นาย A (หัวหน้าทีม / Main Web)
- * รองรับการเชื่อมต่อข้อมูล (Shared LocalStorage) กับ 5 Sub Web ของสมาชิกในทีม
+ * เชื่อมต่อฐานข้อมูลกลาง EggifyDB (SQLite API + LocalStorage) ร่วมกับสมาชิก B, C, D, E
  */
 
-const DEFAULT_PRODUCTS = [
-  {
-    id: 'egg-01',
-    name: 'ไข่ไก่สดออร์แกนิค (Free-Range) แพ็ก 10 ฟอง',
-    category: 'organic',
-    categoryLabel: 'ไข่ออร์แกนิค',
-    badge: 'ขายดีอันดับ 1',
-    meta: 'แม่ไก่เลี้ยงปล่อยอิสระ ปลอดยาปฏิชีวนะ 100%',
-    price: 89,
-    unit: 'แพ็ก 10 ฟอง',
-    eggType: 'brown'
-  },
-  {
-    id: 'egg-02',
-    name: 'ไข่ไก่สดคัดพิเศษ เบอร์ 0 ยกแผง 30 ฟอง',
-    category: 'chicken',
-    categoryLabel: 'ไข่ไก่สด',
-    badge: 'คุ้มค่า',
-    meta: 'ฟองใหญ่พิเศษ ไข่แดงกลมโต เก็บใหม่จากฟาร์มทุกเช้า',
-    price: 145,
-    unit: 'แผง 30 ฟอง',
-    eggType: 'brown'
-  },
-  {
-    id: 'egg-03',
-    name: 'ไข่เป็ดไล่ทุ่งสุพรรณบุรี แพ็ก 10 ฟอง',
-    category: 'duck',
-    categoryLabel: 'ไข่เป็ดสด',
-    badge: 'ไข่แดงมันเยิ้ม',
-    meta: 'เหมาะสำหรับทำไข่ดาวกรอบ ไข่ต้มยางมะตูม และขนมไทย',
-    price: 75,
-    unit: 'แพ็ก 10 ฟอง',
-    eggType: 'white'
-  },
-  {
-    id: 'egg-04',
-    name: 'ไข่ไก่เสริม Omega-3 & Vitamin E แพ็ก 10 ฟอง',
-    category: 'organic',
-    categoryLabel: 'ไข่ออร์แกนิค',
-    badge: 'เพื่อสุขภาพ',
-    meta: 'โอเมก้า 3 สูงกว่าไข่ทั่วไป 3 เท่า บำรุงสมองและหัวใจ',
-    price: 99,
-    unit: 'แพ็ก 10 ฟอง',
-    eggType: 'mixed'
-  },
-  {
-    id: 'egg-05',
-    name: 'ไข่เค็มไชยาพอกดินสอพอง สูตรดั้งเดิม 6 ฟอง',
-    category: 'special',
-    categoryLabel: 'ไข่แปรรูป',
-    badge: 'OTOP คัดพิเศษ',
-    meta: 'เค็มกำลังดี ไข่แดงแดงสดมันเยิ้ม ต้มหรือทอดก็อร่อย',
-    price: 65,
-    unit: 'กล่อง 6 ฟอง',
-    eggType: 'white'
-  },
-  {
-    id: 'egg-06',
-    name: 'ชุดครอบครัวอิ่มคุ้ม Mixed Farm Pack (40 ฟอง)',
-    category: 'special',
-    categoryLabel: 'เซ็ตโปรโมชั่น',
-    badge: 'ลดพิเศษ 15%',
-    meta: 'ไข่ไก่เบอร์ 0 (30 ฟอง) + ไข่ออร์แกนิค (10 ฟอง) ส่งฟรี!',
-    price: 215,
-    unit: 'เซ็ต 40 ฟอง',
-    eggType: 'mixed'
-  }
-];
-
-// เตรียมข้อมูลลง LocalStorage เพื่อให้หน้า Sub Web อื่นๆ (เช่น สินค้า, ตะกร้า, Admin) ดึงไปใช้ต่อได้ทันที
-function initSharedStore() {
-  if (!localStorage.getItem('eggify_products')) {
-    localStorage.setItem('eggify_products', JSON.stringify(DEFAULT_PRODUCTS));
-  }
-  if (!localStorage.getItem('eggify_cart')) {
-    localStorage.setItem('eggify_cart', JSON.stringify([]));
-  }
-}
-
-function mapAdminProduct(p) {
-  const catMap = {
-    'ไข่ไก่': 'chicken',
-    'ไข่เป็ด': 'duck',
-    'ไข่นกกระทา': 'special',
-    'อื่น ๆ': 'special'
-  };
-  return {
-    id: `admin-${p.id}`,
-    name: p.name,
-    category: catMap[p.category] || 'special',
-    categoryLabel: p.category || 'สินค้าทั่วไป',
-    badge: `คงเหลือ ${p.stock} ชิ้น`,
-    meta: p.description || 'สินค้าคัดพิเศษจากระบบหลังบ้าน EGGIFY Admin',
-    price: Number(p.price) || 0,
-    unit: 'รายการ',
-    eggType: p.category === 'ไข่เป็ด' ? 'white' : p.category === 'ไข่นกกระทา' ? 'mixed' : 'brown'
-  };
-}
-
-function getProducts() {
-  let base = DEFAULT_PRODUCTS;
-  try {
-    base = JSON.parse(localStorage.getItem('eggify_products')) || DEFAULT_PRODUCTS;
-  } catch {
-    base = DEFAULT_PRODUCTS;
-  }
-
-  try {
-    const adminRaw = localStorage.getItem('eggify_admin_products');
-    if (adminRaw) {
-      const adminList = JSON.parse(adminRaw);
-      if (Array.isArray(adminList)) {
-        const customAdminItems = adminList
-          .filter((p) => Number(p.id) > 3)
-          .map(mapAdminProduct);
-        return [...base, ...customAdminItems];
-      }
-    }
-  } catch {
-    // fallback to base products
-  }
-  return base;
-}
-
-function getCart() {
-  try {
-    return JSON.parse(localStorage.getItem('eggify_cart')) || [];
-  } catch {
-    return [];
-  }
-}
-
-function saveCart(cart) {
-  localStorage.setItem('eggify_cart', JSON.stringify(cart));
-  updateCartUI();
-}
-
-// สร้างกราฟิกไข่จำลองสำหรับแต่ละการ์ดสินค้า
-function renderEggThumbGraphic(type) {
-  if (type === 'white') {
-    return `
-      <div class="mini-egg-pack" style="background:#E6DEC8;border-color:#CFC4A9;">
-        <div class="mini-egg egg-white"></div>
-        <div class="mini-egg egg-white"></div>
-        <div class="mini-egg egg-white"></div>
-      </div>
-    `;
-  }
-  if (type === 'mixed') {
-    return `
-      <div class="mini-egg-pack">
-        <div class="mini-egg egg-brown"></div>
-        <div class="mini-egg egg-white"></div>
-        <div class="mini-egg egg-brown"></div>
-      </div>
-    `;
-  }
-  return `
-    <div class="mini-egg-pack">
-      <div class="mini-egg egg-brown"></div>
-      <div class="mini-egg egg-brown"></div>
-      <div class="mini-egg egg-brown"></div>
-    </div>
-  `;
-}
-
-// แสดงรายการสินค้าบนหน้าหลัก
 function renderProducts(filterCategory = 'all', searchKeyword = '') {
   const grid = document.getElementById('productGrid');
-  if (!grid) return;
+  if (!grid || !window.EggifyDB) return;
 
-  const products = getProducts();
+  const products = window.EggifyDB.getProducts();
   const allCountBtn = document.querySelector('.cat-pill[data-cat="all"]');
   if (allCountBtn) {
     allCountBtn.textContent = `ทั้งหมด (${products.length})`;
   }
+
+  const kw = searchKeyword.trim().toLowerCase();
   const filtered = products.filter((item) => {
-    const matchCat = filterCategory === 'all' || item.category === filterCategory;
+    const matchCat =
+      filterCategory === 'all' ||
+      item.categoryKey === filterCategory ||
+      item.category === filterCategory;
     const matchSearch =
-      !searchKeyword ||
-      item.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-      item.meta.toLowerCase().includes(searchKeyword.toLowerCase());
+      !kw ||
+      item.name.toLowerCase().includes(kw) ||
+      item.category.toLowerCase().includes(kw) ||
+      (item.description && item.description.toLowerCase().includes(kw));
     return matchCat && matchSearch;
   });
 
@@ -202,24 +41,29 @@ function renderProducts(filterCategory = 'all', searchKeyword = '') {
   grid.innerHTML = filtered
     .map(
       (item) => `
-      <article class="product-card" data-category="${item.category}">
-        <div class="product-thumb">
+      <article class="product-card" data-category="${item.categoryKey}">
+        <div class="product-thumb" onclick="openProductDetail('${item.id}')" style="cursor:pointer;" title="คลิกเพื่อดูรายละเอียดสินค้า">
           <span class="product-badge">${item.badge}</span>
-          ${renderEggThumbGraphic(item.eggType)}
+          ${window.EggifyDB.renderEggGraphic(item.eggType)}
         </div>
         <div>
-          <span class="product-cat">${item.categoryLabel} • ${item.unit}</span>
+          <span class="product-cat">${item.category} • ${item.unit} (คงเหลือ ${item.stock})</span>
           <h3 class="product-name">${item.name}</h3>
-          <p class="product-meta">${item.meta}</p>
+          <p class="product-meta">${item.description}</p>
         </div>
         <div class="product-bottom">
           <div>
             <span class="product-price">฿${item.price}</span>
             <span class="price-unit">/ ${item.unit}</span>
           </div>
-          <button type="button" class="btn-add-cart" onclick="addToCart('${item.id}')">
-            <span>+ ใส่ตะกร้า</span>
-          </button>
+          <div class="product-action-row">
+            <button type="button" class="btn-detail-view" onclick="openProductDetail('${item.id}')">
+              ดูรายละเอียด
+            </button>
+            <button type="button" class="btn-add-cart" onclick="addToCart('${item.id}')">
+              <span>+ ใส่ตะกร้า</span>
+            </button>
+          </div>
         </div>
       </article>
     `
@@ -227,46 +71,85 @@ function renderProducts(filterCategory = 'all', searchKeyword = '') {
     .join('');
 }
 
-// ระบบตะกร้าสินค้า
-function addToCart(productId) {
-  const products = getProducts();
-  const target = products.find((p) => p.id === productId);
-  if (!target) return;
+function openProductDetail(productRef) {
+  const modal = document.getElementById('productDetailModal');
+  const visualEl = document.getElementById('detailModalVisual');
+  const infoEl = document.getElementById('detailModalInfo');
+  if (!modal || !visualEl || !infoEl || !window.EggifyDB) return;
 
-  const cart = getCart();
-  const existing = cart.find((item) => item.id === productId);
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({
-      id: target.id,
-      name: target.name,
-      price: target.price,
-      unit: target.unit,
-      qty: 1
-    });
-  }
+  const product = window.EggifyDB.getProducts().find(
+    (p) => String(p.id) === String(productRef) || String(p.code) === String(productRef)
+  );
+  if (!product) return;
 
-  saveCart(cart);
-  showToast(`เพิ่ม "${target.name}" ลงตะกร้าแล้ว`);
+  visualEl.innerHTML = `
+    <span class="badge-fresh" style="background:#FFF;color:var(--brand-orange);">${product.badge}</span>
+    <div style="transform:scale(1.32);margin:18px 0;">
+      ${window.EggifyDB.renderEggGraphic(product.eggType)}
+    </div>
+    <span style="font-size:0.8rem;color:var(--text-secondary);font-weight:600;">📍 ${product.farmOrigin}</span>
+  `;
+
+  infoEl.innerHTML = `
+    <div>
+      <span class="section-eyebrow">${product.category} • รหัส ${product.code.toUpperCase()}</span>
+      <h2 id="detailModalTitle" style="font-size:1.38rem;font-weight:700;line-height:1.3;margin-top:4px;">${product.name}</h2>
+    </div>
+    <p style="font-size:0.92rem;color:var(--text-secondary);">${product.description}</p>
+    <div class="spec-grid">
+      <div class="spec-box">
+        <small>ขนาด / น้ำหนัก</small>
+        <strong>${product.weight}</strong>
+      </div>
+      <div class="spec-box">
+        <small>ขนาดบรรจุ</small>
+        <strong>${product.unit}</strong>
+      </div>
+      <div class="spec-box" style="grid-column:1 / -1;">
+        <small>คุณค่าทางโภชนาการ & มาตรฐาน</small>
+        <strong>${product.nutrition}</strong>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border-subtle);margin-top:auto;">
+      <div>
+        <span style="font-size:1.6rem;font-weight:800;color:var(--brand-orange);">฿${product.price}</span>
+        <span class="price-unit">/ ${product.unit}</span>
+        <div style="font-size:0.78rem;color:var(--brand-green);font-weight:600;">มีสินค้าพร้อมส่ง (${product.stock} ชิ้น)</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button type="button" class="btn-add-cart" style="padding:11px 22px;font-size:0.92rem;" onclick="addToCart('${product.id}'); closeProductDetail();">
+          + หยิบใส่ตะกร้าทันที
+        </button>
+      </div>
+    </div>
+  `;
+
+  modal.classList.add('open');
 }
 
-function changeCartQty(productId, delta) {
-  let cart = getCart();
-  const item = cart.find((i) => i.id === productId);
-  if (!item) return;
+function closeProductDetail() {
+  const modal = document.getElementById('productDetailModal');
+  if (modal) modal.classList.remove('open');
+}
 
-  item.qty += delta;
-  if (item.qty <= 0) {
-    cart = cart.filter((i) => i.id !== productId);
+function addToCart(productRef, qty = 1) {
+  if (!window.EggifyDB) return;
+  const added = window.EggifyDB.addToCart(productRef, qty);
+  if (added) {
+    updateCartUI();
+    showToast(`เพิ่ม "${added.name}" ลงตะกร้าแล้ว`);
   }
-  saveCart(cart);
+}
+
+function changeCartQty(productRef, delta) {
+  if (!window.EggifyDB) return;
+  window.EggifyDB.updateCartQty(productRef, delta);
+  updateCartUI();
 }
 
 function updateCartUI() {
-  const cart = getCart();
-  const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  if (!window.EggifyDB) return;
+  const { cart, totalCount, subtotal } = window.EggifyDB.calculateCartTotals();
 
   const badge = document.getElementById('cartCountBadge');
   if (badge) {
@@ -277,7 +160,7 @@ function updateCartUI() {
   const cartTotalEl = document.getElementById('cartTotalPrice');
   if (!cartList || !cartTotalEl) return;
 
-  cartTotalEl.textContent = `฿${totalPrice.toLocaleString()}`;
+  cartTotalEl.textContent = `฿${subtotal.toLocaleString()}`;
 
   if (cart.length === 0) {
     cartList.innerHTML = `
@@ -308,7 +191,6 @@ function updateCartUI() {
     .join('');
 }
 
-// เปิด-ปิด ตะกร้าสินค้า
 function toggleCartDrawer(forceOpen) {
   const drawer = document.getElementById('cartDrawer');
   const backdrop = document.getElementById('drawerBackdrop');
@@ -319,7 +201,6 @@ function toggleCartDrawer(forceOpen) {
   backdrop.classList.toggle('open', isOpen);
 }
 
-// ระบบคัดลอกโค้ดส่วนลดโปรโมชั่น
 function copyPromoCode(code, btnElement) {
   if (navigator.clipboard) {
     navigator.clipboard.writeText(code).catch(() => {});
@@ -338,7 +219,6 @@ function copyPromoCode(code, btnElement) {
   }
 }
 
-// แจ้งเตือน Toast
 let toastTimer = null;
 function showToast(message) {
   const toast = document.getElementById('toastNotification');
@@ -351,7 +231,6 @@ function showToast(message) {
   }, 2800);
 }
 
-// นับเวลาถอยหลังโปรโมชั่น Flash Sale
 function startPromoCountdown() {
   const hoursEl = document.getElementById('timerHours');
   const minsEl = document.getElementById('timerMinutes');
@@ -371,14 +250,19 @@ function startPromoCountdown() {
   }, 1000);
 }
 
-// เริ่มต้นการทำงานเมื่อโหลดหน้าเว็บเสร็จ
 document.addEventListener('DOMContentLoaded', () => {
-  initSharedStore();
   renderProducts('all');
   updateCartUI();
   startPromoCountdown();
 
-  // ปุ่มกรองหมวดหมู่สินค้า
+  window.addEventListener('eggify:synced', () => {
+    const activeCatBtn = document.querySelector('.cat-pill.active');
+    const selectedCat = activeCatBtn ? activeCatBtn.getAttribute('data-cat') : 'all';
+    const searchInput = document.getElementById('quickSearchInput');
+    renderProducts(selectedCat, searchInput ? searchInput.value : '');
+    updateCartUI();
+  });
+
   const catButtons = document.querySelectorAll('.cat-pill');
   catButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -390,7 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ช่องค้นหาสินค้าด่วน
   const searchInput = document.getElementById('quickSearchInput');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -400,7 +283,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ปุ่มค้นหาบน Navbar (เลื่อนลงไปที่ช่องค้นหาพร้อมโฟกัส)
   const searchTriggerBtn = document.getElementById('navSearchBtn');
   if (searchTriggerBtn && searchInput) {
     searchTriggerBtn.addEventListener('click', () => {
@@ -409,7 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ปุ่มเมนูมือถือ
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const navMenu = document.getElementById('mainNavMenu');
   if (mobileMenuBtn && navMenu) {
@@ -418,4 +299,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-

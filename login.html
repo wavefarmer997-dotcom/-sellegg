@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เข้าสู่ระบบ / สมัครสมาชิก | EGGIFY – Fresh Egg Market</title>
+  <meta name="description" content="ระบบล็อกอินและสมัครสมาชิกออนไลน์ร้านขายไข่สด EGGIFY พร้อมตรวจสอบประวัติคำสั่งซื้อ" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- 1. TOP PROMOTION BAR -->
+  <div class="top-promo-bar">
+    <div class="container top-promo-inner">
+      <div class="top-promo-message">
+        <span class="promo-pill-new">AUTHENTICATION</span>
+        <span>เข้าสู่ระบบสมาชิกเพื่อรับส่วนลดพิเศษ และติดตามสถานะคำสั่งซื้อแบบ Real-time</span>
+      </div>
+      <div class="top-promo-links">
+        <span>🔐 เชื่อมต่อฐานข้อมูลผู้ใช้ (SQLite & Cloud Storage)</span>
+        <span class="promo-divider">|</span>
+        <a href="index.html">กลับหน้าหลัก</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. HEADER & NAVBAR -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="index.html" class="brand-logo" aria-label="EGGIFY หน้าหลัก">
+        <span class="brand-icon-box" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2B1E16" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c4.97 0 8-3.58 8-8.5C20 7.5 15.5 2 12 2S4 7.5 4 13.5C4 18.42 7.03 22 12 22Z" />
+          </svg>
+        </span>
+        <div class="brand-text-wrap">
+          <span class="brand-name">EGGIFY</span>
+          <span class="brand-sub">Fresh Egg Market</span>
+        </div>
+      </a>
+
+      <nav class="navbar-center" aria-label="เมนูหลัก">
+        <ul class="nav-menu" id="mainNavMenu">
+          <li><a href="index.html" class="nav-link">หน้าหลัก</a></li>
+          <li><a href="products.html" class="nav-link">สินค้าทั้งหมด</a></li>
+          <li><a href="cart.html" class="nav-link">ตะกร้าสินค้า</a></li>
+          <li><a href="checkout.html" class="nav-link">ชำระเงิน</a></li>
+          <li><a href="login.html" class="nav-link active">เข้าสู่ระบบ</a></li>
+          <li>
+            <a href="admin.html" class="nav-link nav-link-admin">
+              <span class="admin-dot"></span>ระบบ Admin
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="cart.html" class="icon-btn" aria-label="ตะกร้าสินค้า">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-count" id="cartCountBadge">0</span>
+        </a>
+
+        <a href="login.html" class="icon-btn js-user-nav-btn" aria-label="บัญชีสมาชิก">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+
+        <button type="button" class="icon-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนู">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-page-wrap">
+    <div class="container">
+      <!-- แสดงเมื่อยังไม่ได้ล็อกอิน -->
+      <div id="guestAuthSection" class="auth-bento-grid">
+        <!-- การ์ดซ้าย: แนะนำระบบสมาชิก & บัญชีทดสอบด่วน -->
+        <div class="panel-bento" style="background:linear-gradient(145deg, var(--bg-cream) 0%, #F5E3B8 100%);display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <span class="badge-fresh">EGGIFY MEMBER CLUB</span>
+            <h1 style="font-size:clamp(1.65rem,3vw,2.25rem);font-weight:700;margin-top:10px;line-height:1.25;">
+              ยินดีต้อนรับสู่ระบบสมาชิก<br />EGGIFY Fresh Egg Market
+            </h1>
+            <p style="color:var(--text-secondary);margin-top:8px;font-size:0.95rem;">
+              เข้าสู่ระบบเพื่อจัดการที่อยู่จัดส่งอัตโนมัติ ติดตามสถานะคำสั่งซื้อแบบเรียลไทม์ หรือเข้าสู่ระบบผู้ดูแลร้าน (Admin)
+            </p>
+
+            <ul class="feature-checklist" style="margin-top:18px;">
+              <li>✅ บันทึกข้อมูลผู้ใช้งานลงฐานข้อมูล (SQLite + Cloud Storage)</li>
+              <li>✅ ดึงชื่อ เบอร์โทร และที่อยู่ไปยังหน้า <code>checkout.html</code> อัตโนมัติ</li>
+              <li>✅ ตรวจสอบสถานะการจัดส่งไข่สดและประวัติคำสั่งซื้อย้อนหลัง</li>
+              <li>✅ รองรับสิทธิ์ผู้ดูแลระบบ (Admin) สำหรับจัดการหลังบ้าน <code>admin.html</code></li>
+            </ul>
+          </div>
+
+          <div class="demo-cred-box" style="background:rgba(255,255,255,0.88);">
+            <span class="section-eyebrow">QUICK DEMO LOGIN (คลิกเพื่อกรอกและเข้าสู่ระบบทันที)</span>
+            <p style="font-size:0.84rem;color:var(--text-secondary);margin-bottom:10px;">
+              เลือกบัญชีตัวอย่างด้านล่างเพื่อทดสอบระบบล็อกอินได้ในคลิกเดียว:
+            </p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button type="button" class="btn-sage-pill" onclick="quickDemoLogin('admin@eggify.com', 'admin123')">
+                👨‍💼 ล็อกอินเป็น Admin (ผู้ดูแลร้าน)
+              </button>
+              <button type="button" class="btn-outline-pill" onclick="quickDemoLogin('customer@eggify.com', '123456')">
+                🧑‍🍳 ล็อกอินเป็น ลูกค้า (สมชาย)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- การ์ดขวา: ฟอร์มเข้าสู่ระบบ / สมัครสมาชิก -->
+        <div class="panel-bento">
+          <div class="auth-tabs" role="tablist">
+            <button type="button" class="auth-tab-btn active" id="tabLoginBtn" onclick="switchAuthTab('login')">
+              เข้าสู่ระบบ (Login)
+            </button>
+            <button type="button" class="auth-tab-btn" id="tabRegisterBtn" onclick="switchAuthTab('register')">
+              สมัครสมาชิกใหม่ (Register)
+            </button>
+          </div>
+
+          <!-- ฟอร์ม Login -->
+          <form id="loginForm">
+            <div class="form-field">
+              <label for="loginEmail">อีเมลผู้ใช้งาน *</label>
+              <input type="email" id="loginEmail" class="form-control" placeholder="เช่น customer@eggify.com หรือ admin@eggify.com" required />
+            </div>
+            <div class="form-field">
+              <label for="loginPassword">รหัสผ่าน *</label>
+              <input type="password" id="loginPassword" class="form-control" placeholder="กรอกรหัสผ่าน" required />
+            </div>
+            <button type="submit" class="btn-add-cart" style="width:100%;justify-content:center;padding:13px;font-size:0.98rem;margin-top:8px;">
+              🔐 เข้าสู่ระบบ
+            </button>
+          </form>
+
+          <!-- ฟอร์ม Register -->
+          <form id="registerForm" style="display:none;">
+            <div class="form-field">
+              <label for="regName">ชื่อ - นามสกุล *</label>
+              <input type="text" id="regName" class="form-control" placeholder="เช่น คุณนภา รักสุขภาพ" required />
+            </div>
+            <div class="form-grid-2">
+              <div class="form-field">
+                <label for="regEmail">อีเมล *</label>
+                <input type="email" id="regEmail" class="form-control" placeholder="name@example.com" required />
+              </div>
+              <div class="form-field">
+                <label for="regPhone">เบอร์โทรศัพท์ *</label>
+                <input type="tel" id="regPhone" class="form-control" placeholder="081-234-5678" required />
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="regAddress">ที่อยู่จัดส่งเริ่มต้น</label>
+              <input type="text" id="regAddress" class="form-control" placeholder="บ้านเลขที่ ถนน แขวง เขต จังหวัด รหัสไปรษณีย์" />
+            </div>
+            <div class="form-field">
+              <label for="regPassword">กำหนดรหัสผ่าน (อย่างน้อย 4 ตัวอักษร) *</label>
+              <input type="password" id="regPassword" class="form-control" minlength="4" placeholder="กำหนดรหัสผ่านของคุณ" required />
+            </div>
+            <button type="submit" class="btn-sage-pill" style="width:100%;justify-content:center;padding:13px;font-size:0.98rem;background:var(--brand-green);color:#FFF;">
+              ✨ ยืนยันสมัครสมาชิกและเข้าสู่ระบบ
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- แสดงเมื่อเข้าสู่ระบบแล้ว (หน้าโปรไฟล์ & ประวัติคำสั่งซื้อ) -->
+      <div id="memberProfileSection" style="display:none;">
+        <div class="subpage-hero-card" style="margin-bottom:24px;">
+          <div>
+            <span class="badge-fresh" id="profileRoleBadge">MEMBER ACCOUNT</span>
+            <h1 style="font-size:1.85rem;font-weight:700;margin-top:6px;" id="profileWelcomeName">สวัสดีคุณสมาชิก</h1>
+            <p style="color:var(--text-secondary);font-size:0.92rem;" id="profileContactInfo"></p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="admin.html" id="profileAdminBtn" class="btn-sage-pill" style="display:none;background:var(--brand-green);color:#FFF;">
+              ⚙️ เปิดหน้าจัดการระบบ Admin →
+            </a>
+            <a href="products.html" class="btn-outline-pill">🛒 เลือกซื้อไข่สด</a>
+            <button type="button" class="btn-remove-item" onclick="handleLogout()" style="padding:10px 18px;">
+              ออกจากระบบ (Logout)
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-bento">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <div>
+              <span class="section-eyebrow">ORDER HISTORY & TRACKING</span>
+              <h2 style="font-size:1.3rem;font-weight:700;">ประวัติคำสั่งซื้อและสถานะการจัดส่ง</h2>
+            </div>
+            <a href="checkout.html" class="link-arrow">ไปหน้าสั่งซื้อ (checkout.html) →</a>
+          </div>
+          <div id="memberOrdersContainer"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:0;">
+        <span>© 2026 EGGIFY – Fresh Egg Market | ระบบล็อกอินสมาชิกและฐานข้อมูลออนไลน์</span>
+        <span>Minimal Edition × Bento Grid UI</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-notification" id="toastNotification" role="status" aria-live="polite"></div>
+
+  <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
+
