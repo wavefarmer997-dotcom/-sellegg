@@ -71,7 +71,7 @@
           <li>
             <a href="login.html" class="nav-link" title="ระบบล็อกอินและสมาชิก">เข้าสู่ระบบ</a>
           </li>
-          <li>
+          <li class="js-admin-only">
             <a href="admin.html" class="nav-link nav-link-admin" title="นาย E: ระบบหลังบ้าน (Admin Web)">
               <span class="admin-dot"></span>ระบบ Admin
             </a>
@@ -464,8 +464,8 @@
               <span class="subweb-file">ไฟล์เชื่อมโยง: checkout.html →</span>
             </a>
 
-            <!-- นาย E -->
-            <a href="admin.html" class="subweb-card">
+            <!-- นาย E (แสดงเฉพาะผู้ดูแลระบบ Admin) -->
+            <a href="admin.html" class="subweb-card js-admin-only">
               <span class="subweb-role-tag">นาย E • ระบบหลังบ้าน (Admin Web)</span>
               <h3 class="subweb-title">จัดการข้อมูล & ทดสอบระบบ</h3>
               <p class="subweb-desc">เพิ่ม ลบ แก้ไขสินค้า ดูรายการคำสั่งซื้อ ตรวจสอบยอดขาย และระบบทดสอบการเชื่อมโยงทุกหน้า</p>
@@ -474,9 +474,9 @@
 
             <!-- ระบบล็อกอินและฐานข้อมูล -->
             <a href="login.html" class="subweb-card">
-              <span class="subweb-role-tag">🔐 ระบบล็อกอิน & ฐานข้อมูลออนไลน์</span>
+              <span class="subweb-role-tag">🔐 ระบบสมาชิก & ฐานข้อมูลออนไลน์</span>
               <h3 class="subweb-title">เข้าสู่ระบบ / สมัครสมาชิก & ประวัติสั่งซื้อ</h3>
-              <p class="subweb-desc">ล็อกอินผู้ดูแลระบบและลูกค้า เชื่อมต่อฐานข้อมูล SQLite (server.js) และ Cloud LocalStorage</p>
+              <p class="subweb-desc">ล็อกอินและสมัครสมาชิกสำหรับลูกค้า พร้อมตรวจสอบประวัติคำสั่งซื้อที่เชื่อมกับฐานข้อมูล SQLite</p>
               <span class="subweb-file">ไฟล์เชื่อมโยง: login.html →</span>
             </a>
           </div>
@@ -522,7 +522,7 @@
             <li><a href="products.html">ระบบสินค้า (Product Web - นาย B)</a></li>
             <li><a href="cart.html">ระบบตะกร้าสินค้า (Cart Web - นาย C)</a></li>
             <li><a href="checkout.html">ระบบสั่งซื้อ (Checkout Web - นาย D)</a></li>
-            <li><a href="admin.html">ระบบหลังบ้าน (Admin Web - นาย E)</a></li>
+            <li class="js-admin-only"><a href="admin.html">ระบบหลังบ้าน (Admin Web - นาย E)</a></li>
             <li><a href="login.html">เข้าสู่ระบบ / สมัครสมาชิก</a></li>
           </ul>
         </div>

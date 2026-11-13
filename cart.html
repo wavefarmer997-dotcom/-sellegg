@@ -46,7 +46,7 @@
           <li><a href="cart.html" class="nav-link active">ตะกร้าสินค้า</a></li>
           <li><a href="checkout.html" class="nav-link">ชำระเงิน</a></li>
           <li><a href="login.html" class="nav-link">เข้าสู่ระบบ</a></li>
-          <li>
+          <li class="js-admin-only">
             <a href="admin.html" class="nav-link nav-link-admin">
               <span class="admin-dot"></span>ระบบ Admin
             </a>
@@ -217,7 +217,58 @@
   <!-- FOOTER -->
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-bottom" style="padding-top:0;">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="brand-logo" style="color:#FFFFFF;">
+            <span class="brand-icon-box" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2B1E16" stroke-width="2.2">
+                <path d="M12 22c4.97 0 8-3.58 8-8.5C20 7.5 15.5 2 12 2S4 7.5 4 13.5C4 18.42 7.03 22 12 22Z" />
+              </svg>
+            </span>
+            <div class="brand-text-wrap">
+              <span>EGGIFY</span>
+              <span class="brand-sub" style="color:rgba(255,255,255,0.65);">Fresh Egg Market</span>
+            </div>
+          </a>
+          <p class="footer-brand-desc">
+            ตะกร้าสินค้าและการคำนวณราคาอัตโนมัติ เชื่อมต่อคลังสินค้าและโปรโมชั่นส่วนลดจากฟาร์มโดยตรง
+          </p>
+          <div class="footer-badges">
+            <span class="footer-pill">Auto Calculation</span>
+            <span class="footer-pill">Free Ship ฿500+</span>
+          </div>
+        </div>
+        <div>
+          <h3 class="footer-heading">เมนูเว็บไซต์ (A–E)</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">หน้าหลัก (Main Web - นาย A)</a></li>
+            <li><a href="products.html">ระบบสินค้า (Product Web - นาย B)</a></li>
+            <li><a href="cart.html">ระบบตะกร้าสินค้า (Cart Web - นาย C)</a></li>
+            <li><a href="checkout.html">ระบบสั่งซื้อ (Checkout Web - นาย D)</a></li>
+            <li class="js-admin-only"><a href="admin.html">ระบบหลังบ้าน (Admin Web - นาย E)</a></li>
+            <li><a href="login.html">เข้าสู่ระบบ / ประวัติสั่งซื้อ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="footer-heading">หมวดหมู่สินค้า</h3>
+          <ul class="footer-links">
+            <li><a href="products.html?cat=ไข่ไก่">ไข่ไก่สดคัดพิเศษ</a></li>
+            <li><a href="products.html?cat=ไข่เป็ด">ไข่เป็ดไล่ทุ่ง</a></li>
+            <li><a href="products.html?cat=ไข่นกกระทา">ไข่นกกระทาปลอดสาร</a></li>
+            <li><a href="products.html?cat=เซ็ตสุดคุ้ม">เซ็ตครอบครัวสุดคุ้ม</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="footer-heading">ข้อมูลร้าน & ติดต่อ</h3>
+          <p style="font-size:0.84rem;color:rgba(234,224,213,0.72);line-height:1.7;">
+            📍 ฟาร์มเอ้กอิฟาย ออร์แกนิค จ.นครปฐม<br />
+            📞 02-123-4567 (ทุกวัน 07:00 - 20:00 น.)<br />
+            🚚 จัดส่งห้องเย็นควบคุมอุณหภูมิทุกวัน
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
         <span>© 2026 EGGIFY – Fresh Egg Market | ส่วนงานของ นาย C – ระบบตะกร้าสินค้า (Cart Web)</span>
         <span>Minimal Edition × Bento Grid UI</span>
       </div>

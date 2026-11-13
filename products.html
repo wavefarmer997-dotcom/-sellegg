@@ -49,7 +49,7 @@
           <li><a href="cart.html" class="nav-link">ตะกร้าสินค้า</a></li>
           <li><a href="checkout.html" class="nav-link">ชำระเงิน</a></li>
           <li><a href="login.html" class="nav-link">เข้าสู่ระบบ</a></li>
-          <li>
+          <li class="js-admin-only">
             <a href="admin.html" class="nav-link nav-link-admin">
               <span class="admin-dot"></span>ระบบ Admin
             </a>
@@ -172,33 +172,33 @@
             </div>
           </div>
           <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;background:#FFF;border-radius:16px;overflow:hidden;">
+            <table class="comparison-table">
               <thead>
-                <tr style="background:#2B1E16;color:#FFF;text-align:left;font-size:0.86rem;">
-                  <th style="padding:14px 16px;">ชนิดของไข่</th>
-                  <th style="padding:14px 16px;">น้ำหนักเฉลี่ย/ฟอง</th>
-                  <th style="padding:14px 16px;">จุดเด่นของเนื้อสัมผัส</th>
-                  <th style="padding:14px 16px;">เมนูแนะนำ</th>
+                <tr>
+                  <th>ชนิดของไข่</th>
+                  <th>น้ำหนักเฉลี่ย/ฟอง</th>
+                  <th>จุดเด่นของเนื้อสัมผัส</th>
+                  <th>เมนูแนะนำ</th>
                 </tr>
               </thead>
-              <tbody style="font-size:0.88rem;">
-                <tr style="border-bottom:1px solid var(--border-subtle);">
-                  <td style="padding:14px 16px;font-weight:700;">🥚 ไข่ไก่สด (เบอร์ 0 / เบอร์ 1 / ออร์แกนิค)</td>
-                  <td style="padding:14px 16px;">65 – 75 กรัม</td>
-                  <td style="padding:14px 16px;">เนื้อนุ่ม ฟู หอมละมุน คาวน้อย</td>
-                  <td style="padding:14px 16px;">ไข่ลวก ไข่เจียว เบเกอรี่ อาหารคลีน</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--border-subtle);">
-                  <td style="padding:14px 16px;font-weight:700;">🦆 ไข่เป็ดไล่ทุ่งสุพรรณบุรี</td>
-                  <td style="padding:14px 16px;">70 – 80 กรัม</td>
-                  <td style="padding:14px 16px;">ไข่แดงลูกใหญ่ สีส้มจัด มันเยิ้มเข้มข้น</td>
-                  <td style="padding:14px 16px;">ไข่ดาวกรอบ ไข่ต้มยางมะตูม ขนมไทย ไข่พะโล้</td>
+              <tbody>
+                <tr>
+                  <td style="font-weight:700;">🥚 ไข่ไก่สด (เบอร์ 0 / เบอร์ 1 / ออร์แกนิค)</td>
+                  <td>65 – 75 กรัม</td>
+                  <td>เนื้อนุ่ม ฟู หอมละมุน คาวน้อย</td>
+                  <td>ไข่ลวก ไข่เจียว เบเกอรี่ อาหารคลีน</td>
                 </tr>
                 <tr>
-                  <td style="padding:14px 16px;font-weight:700;">🐣 ไข่นกกระทาปลอดสาร</td>
-                  <td style="padding:14px 16px;">11 – 13 กรัม</td>
-                  <td style="padding:14px 16px;">ขนาดพอดีคำ ย่อยง่าย ธาตุเหล็กและ B12 สูง</td>
-                  <td style="padding:14px 16px;">กระเพาะปลา ขนมครกไข่นกกระทา สลัด เมนูเด็ก</td>
+                  <td style="font-weight:700;">🦆 ไข่เป็ดไล่ทุ่งสุพรรณบุรี</td>
+                  <td>70 – 80 กรัม</td>
+                  <td>ไข่แดงลูกใหญ่ สีส้มจัด มันเยิ้มเข้มข้น</td>
+                  <td>ไข่ดาวกรอบ ไข่ต้มยางมะตูม ขนมไทย ไข่พะโล้</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;">🐣 ไข่นกกระทาปลอดสาร</td>
+                  <td>11 – 13 กรัม</td>
+                  <td>ขนาดพอดีคำ ย่อยง่าย ธาตุเหล็กและ B12 สูง</td>
+                  <td>กระเพาะปลา ขนมครกไข่นกกระทา สลัด เมนูเด็ก</td>
                 </tr>
               </tbody>
             </table>
@@ -244,7 +244,7 @@
             <li><a href="products.html">ระบบสินค้า (Product Web - นาย B)</a></li>
             <li><a href="cart.html">ระบบตะกร้าสินค้า (Cart Web - นาย C)</a></li>
             <li><a href="checkout.html">ระบบสั่งซื้อ (Checkout Web - นาย D)</a></li>
-            <li><a href="admin.html">ระบบหลังบ้าน (Admin Web - นาย E)</a></li>
+            <li class="js-admin-only"><a href="admin.html">ระบบหลังบ้าน (Admin Web - นาย E)</a></li>
           </ul>
         </div>
         <div>

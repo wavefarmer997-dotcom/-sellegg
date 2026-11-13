@@ -11,13 +11,14 @@ const crypto = require('node:crypto');
 const { DatabaseSync } = require('node:sqlite');
 
 const PORT = Number(process.env.PORT) || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 const ROOT_DIR = __dirname;
-const DB_DIR = path.join(ROOT_DIR, 'database');
-const DB_PATH = path.join(DB_DIR, 'eggify.db');
-const SCHEMA_PATH = path.join(DB_DIR, 'schema.sql');
+const SCHEMA_PATH = path.join(ROOT_DIR, 'database', 'schema.sql');
+const DB_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || process.env.DATA_DIR || path.join(ROOT_DIR, 'database');
+const DB_PATH = process.env.DB_PATH || path.join(DB_DIR, 'eggify.db');
 
-if (!fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
+if (!fs.existsSync(path.dirname(DB_PATH))) {
+  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 }
 
 const db = new DatabaseSync(DB_PATH);
@@ -26,6 +27,7 @@ const db = new DatabaseSync(DB_PATH);
 function initializeDatabase(forceReset = false) {
   if (forceReset) {
     db.exec(`
+      DROP TABLE IF EXISTS sessions;
       DROP TABLE IF EXISTS order_items;
       DROP TABLE IF EXISTS orders;
       DROP TABLE IF EXISTS products;
@@ -123,8 +125,10 @@ function fetchAllProducts() {
   }));
 }
 
-function fetchAllOrders() {
-  const orders = db.prepare('SELECT * FROM orders ORDER BY rowid ASC').all();
+function fetchAllOrders(filterEmail = null) {
+  const orders = filterEmail
+    ? db.prepare('SELECT * FROM orders WHERE lower(email) = lower(?) ORDER BY rowid ASC').all(filterEmail)
+    : db.prepare('SELECT * FROM orders ORDER BY rowid ASC').all();
   const itemsStmt = db.prepare('SELECT * FROM order_items WHERE order_id = ?');
   return orders.map(o => ({
     id: o.id,
@@ -145,8 +149,36 @@ function fetchAllOrders() {
   }));
 }
 
-function fetchAllUsers() {
-  return db.prepare('SELECT id, name, email, password, phone, address, role, created_at AS createdAt FROM users').all();
+function fetchSafeUsers() {
+  return db
+    .prepare('SELECT id, name, email, phone, address, role, created_at AS createdAt FROM users')
+    .all();
+}
+
+function getSessionUser(req) {
+  const auth = req.headers.authorization || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
+  if (!token) return null;
+  return (
+    db
+      .prepare(`
+        SELECT u.id, u.name, u.email, u.phone, u.address, u.role
+        FROM sessions s
+        JOIN users u ON u.id = s.user_id
+        WHERE s.token = ?
+      `)
+      .get(token) || null
+  );
+}
+
+function createSessionToken(user) {
+  const token = crypto.randomBytes(24).toString('hex');
+  db.prepare('INSERT INTO sessions (token, user_id, role) VALUES (?, ?, ?)').run(
+    token,
+    user.id,
+    user.role
+  );
+  return token;
 }
 
 function readBody(req) {
@@ -200,15 +232,40 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname === '/api/bootstrap' && req.method === 'GET') {
+      const sessionUser = getSessionUser(req);
+      const isAdmin = sessionUser && sessionUser.role === 'admin';
+      const orders = isAdmin
+        ? fetchAllOrders()
+        : sessionUser
+        ? fetchAllOrders(sessionUser.email)
+        : [];
       return sendJSON(res, 200, {
         ok: true,
+        user: sessionUser,
         products: fetchAllProducts(),
-        orders: fetchAllOrders(),
-        users: fetchAllUsers()
+        orders,
+        users: isAdmin ? fetchSafeUsers() : []
       });
     }
 
     // 2. Authentication API
+    if (pathname === '/api/auth/me' && req.method === 'GET') {
+      const sessionUser = getSessionUser(req);
+      if (!sessionUser) {
+        return sendJSON(res, 401, { ok: false, message: 'ยังไม่ได้เข้าสู่ระบบ' });
+      }
+      return sendJSON(res, 200, { ok: true, user: sessionUser });
+    }
+
+    if (pathname === '/api/auth/logout' && req.method === 'POST') {
+      const auth = req.headers.authorization || '';
+      const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
+      if (token) {
+        db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
+      }
+      return sendJSON(res, 200, { ok: true });
+    }
+
     if (pathname === '/api/auth/login' && req.method === 'POST') {
       const { email, password } = await readBody(req);
       const user = db
@@ -218,7 +275,7 @@ const server = http.createServer(async (req, res) => {
       if (!user) {
         return sendJSON(res, 401, { ok: false, message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' });
       }
-      const token = crypto.randomBytes(16).toString('hex');
+      const token = createSessionToken(user);
       return sendJSON(res, 200, { ok: true, user, token });
     }
 
@@ -244,16 +301,20 @@ const server = http.createServer(async (req, res) => {
         address: address || '',
         role: 'customer'
       };
-      const token = crypto.randomBytes(16).toString('hex');
+      const token = createSessionToken(user);
       return sendJSON(res, 201, { ok: true, user, token });
     }
 
-    // 3. Products CRUD API
+    // 3. Products CRUD API (Read = Public, Write = Admin Only)
     if (pathname === '/api/products' && req.method === 'GET') {
       return sendJSON(res, 200, fetchAllProducts());
     }
 
     if (pathname === '/api/products' && req.method === 'POST') {
+      const sessionUser = getSessionUser(req);
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return sendJSON(res, 403, { ok: false, message: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น' });
+      }
       const p = await readBody(req);
       const id = Number(p.id) || Date.now();
       db.prepare(`
@@ -279,6 +340,10 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname.startsWith('/api/products/') && req.method === 'PUT') {
+      const sessionUser = getSessionUser(req);
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return sendJSON(res, 403, { ok: false, message: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น' });
+      }
       const id = Number(pathname.split('/').pop());
       const p = await readBody(req);
       db.prepare(`
@@ -298,6 +363,10 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname.startsWith('/api/products/') && req.method === 'DELETE') {
+      const sessionUser = getSessionUser(req);
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return sendJSON(res, 403, { ok: false, message: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น' });
+      }
       const id = Number(pathname.split('/').pop());
       db.prepare('DELETE FROM products WHERE id = ?').run(id);
       return sendJSON(res, 200, { ok: true, id });
@@ -305,7 +374,14 @@ const server = http.createServer(async (req, res) => {
 
     // 4. Orders API
     if (pathname === '/api/orders' && req.method === 'GET') {
-      return sendJSON(res, 200, fetchAllOrders());
+      const sessionUser = getSessionUser(req);
+      if (!sessionUser) {
+        return sendJSON(res, 401, { ok: false, message: 'กรุณาเข้าสู่ระบบ' });
+      }
+      if (sessionUser.role === 'admin') {
+        return sendJSON(res, 200, fetchAllOrders());
+      }
+      return sendJSON(res, 200, fetchAllOrders(sessionUser.email));
     }
 
     if (pathname === '/api/orders' && req.method === 'POST') {
@@ -349,6 +425,10 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname.startsWith('/api/orders/') && pathname.endsWith('/status') && req.method === 'PATCH') {
+      const sessionUser = getSessionUser(req);
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return sendJSON(res, 403, { ok: false, message: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น' });
+      }
       const parts = pathname.split('/');
       const orderId = parts[parts.length - 2];
       const { status } = await readBody(req);
@@ -357,8 +437,16 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname === '/api/reset' && req.method === 'POST') {
+      const sessionUser = getSessionUser(req);
+      if (!sessionUser || sessionUser.role !== 'admin') {
+        return sendJSON(res, 403, { ok: false, message: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น' });
+      }
       initializeDatabase(true);
       return sendJSON(res, 200, { ok: true });
+    }
+
+    if ((pathname === '/health' || pathname === '/api/health') && req.method === 'GET') {
+      return sendJSON(res, 200, { ok: true, status: 'healthy', uptime: Math.floor(process.uptime()) });
     }
 
     // 5. Static File Server
@@ -383,10 +471,10 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   console.log('==============================================================');
   console.log(`🥚 EGGIFY Online Web Server & SQLite DB is running!`);
-  console.log(`🌐 URL: http://localhost:${PORT}`);
+  console.log(`🌐 URL: http://localhost:${PORT} (host ${HOST})`);
   console.log(`🗄️  SQLite Database: ${DB_PATH}`);
   console.log('==============================================================');
 });

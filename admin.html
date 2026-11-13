@@ -6,10 +6,55 @@
   <title>EGGIFY | Admin Dashboard (นาย E – ระบบหลังบ้าน & ทดสอบระบบ)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
+  <!-- ADMIN ONLY LOGIN GATE (Visible when not logged in as admin) -->
+  <main class="admin-auth-gate" id="adminAuthGate" aria-label="เข้าสู่ระบบผู้ดูแลร้าน">
+    <section class="admin-auth-card">
+      <div class="admin-auth-brand">
+        <div class="admin-auth-logo" aria-hidden="true">🥚</div>
+        <div>
+          <strong>EGGIFY</strong>
+          <small>ADMIN CONTROL PANEL</small>
+        </div>
+      </div>
+
+      <span class="admin-auth-badge"><span class="lock-dot"></span> ADMIN ONLY · เฉพาะผู้ดูแลระบบ</span>
+      <h1>เข้าสู่ระบบหลังบ้าน</h1>
+      <p class="admin-auth-sub">กรุณายืนยันตัวตนด้วยบัญชีผู้ดูแลระบบ (Administrator) เพื่อจัดการสินค้า คำสั่งซื้อ และตรวจสอบยอดขาย</p>
+
+      <div class="auth-info-alert hidden" id="adminNonAdminAlert" role="status">
+        ขณะนี้บัญชีที่ใช้งานอยู่เป็นบัญชีสมาชิกทั่วไป กรุณากรอกอีเมลและรหัสผ่านของผู้ดูแลระบบ (Admin) เพื่อสลับสิทธิ์เข้าใช้งาน
+      </div>
+
+      <div class="auth-error-alert hidden" id="adminAuthError" role="alert"></div>
+
+      <form class="admin-auth-form" id="adminLoginForm" autocomplete="on">
+        <div class="form-group">
+          <label for="adminEmailInput">อีเมลผู้ดูแลระบบ *</label>
+          <input id="adminEmailInput" type="email" placeholder="กรอกอีเมล Admin" autocomplete="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="adminPasswordInput">รหัสผ่าน *</label>
+          <div class="pw-input-wrap">
+            <input id="adminPasswordInput" type="password" placeholder="กรอกรหัสผ่านผู้ดูแลระบบ" autocomplete="current-password" required>
+            <button type="button" class="pw-toggle-btn" id="toggleAdminPassword" aria-label="แสดงหรือซ่อนรหัสผ่าน" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="admin-submit-btn" id="adminLoginSubmitBtn">🔐 เข้าสู่ระบบ Admin</button>
+      </form>
+
+      <div class="admin-auth-footer">
+        <span>EGGIFY Fresh Egg Market</span>
+        <a href="index.html">← กลับหน้าร้านหลัก</a>
+      </div>
+    </section>
+  </main>
+
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="index.html" title="กลับสู่หน้าร้านหลัก EGGIFY">
@@ -35,6 +80,7 @@
           </div>
         </div>
         <p class="sidebar-note">EGGIFY · Fresh Egg Market</p>
+        <button type="button" class="admin-logout-btn" id="adminLogoutBtn">🚪 ออกจากระบบ Admin</button>
       </div>
     </aside>
 
@@ -46,8 +92,8 @@
           <h1 id="pageTitle">ภาพรวมร้านค้าและยอดขาย</h1>
         </div>
         <div class="topbar-right">
-          <a href="index.html" class="secondary-button" style="text-decoration:none;padding:7px 12px;font-size:11px;">← หน้าร้านหลัก</a>
-          <a href="login.html" class="secondary-button" style="text-decoration:none;padding:7px 12px;font-size:11px;">🔐 บัญชีผู้ใช้</a>
+          <a href="index.html" class="secondary-button" style="text-decoration:none;">← หน้าร้านหลัก</a>
+          <button type="button" class="secondary-button" id="adminTopLogoutBtn">ออกจากระบบ</button>
           <span class="status-dot"></span><span class="online-text" id="dbModeBadge">ฐานข้อมูลพร้อมใช้งาน</span>
           <div class="top-avatar" id="adminTopAvatar">E</div>
         </div>

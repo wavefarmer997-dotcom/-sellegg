@@ -12,11 +12,33 @@ function showToast(message) {
   showToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
 }
 
+function showAuthError(message) {
+  const errEl = document.getElementById('authErrorAlert');
+  if (!errEl) return;
+  if (message) {
+    errEl.textContent = message;
+    errEl.classList.add('show');
+  } else {
+    errEl.textContent = '';
+    errEl.classList.remove('show');
+  }
+}
+
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  if (btn) btn.textContent = isHidden ? 'ซ่อน' : 'แสดง';
+}
+
 function switchAuthTab(mode) {
   const loginForm = document.getElementById('loginForm');
   const regForm = document.getElementById('registerForm');
   const tabLogin = document.getElementById('tabLoginBtn');
   const tabReg = document.getElementById('tabRegisterBtn');
+
+  showAuthError('');
 
   if (mode === 'register') {
     loginForm.style.display = 'none';
@@ -32,20 +54,23 @@ function switchAuthTab(mode) {
 }
 
 async function quickDemoLogin(email, password) {
+  showAuthError('');
   document.getElementById('loginEmail').value = email;
   document.getElementById('loginPassword').value = password;
   const result = await window.EggifyDB.login(email, password);
   if (result.ok) {
+    await window.EggifyDB.syncWithServer();
     window.EggifyDB.syncHeaderStatus();
     renderAuthState();
     showToast(`เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ ${result.user.name}`);
   } else {
+    showAuthError(result.message);
     showToast(result.message);
   }
 }
 
-function handleLogout() {
-  window.EggifyDB.logout();
+async function handleLogout() {
+  await window.EggifyDB.logout();
   window.EggifyDB.syncHeaderStatus();
   renderAuthState();
   showToast('ออกจากระบบเรียบร้อยแล้ว');
@@ -77,12 +102,17 @@ function renderAuthState() {
     adminBtn.style.display = user.role === 'admin' ? 'inline-flex' : 'none';
   }
 
-  const orders = window.EggifyDB.getOrders();
+  const orders = window.EggifyDB.getOrdersForCurrentUser();
   const container = document.getElementById('memberOrdersContainer');
   if (!container) return;
 
   if (orders.length === 0) {
-    container.innerHTML = `<p style="color:var(--text-secondary);">ยังไม่มีประวัติคำสั่งซื้อ</p>`;
+    container.innerHTML = `
+      <div style="padding:20px 0;color:var(--text-secondary);">
+        <p style="margin-bottom:10px;">ยังไม่มีประวัติคำสั่งซื้อในบัญชีนี้</p>
+        <a href="products.html" class="btn-outline-pill">🛒 ไปเลือกซื้อไข่สด</a>
+      </div>
+    `;
     return;
   }
 
@@ -131,14 +161,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginForm) {
     loginForm.addEventListener('submit', async e => {
       e.preventDefault();
+      showAuthError('');
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
       const res = await window.EggifyDB.login(email, pass);
       if (res.ok) {
+        await window.EggifyDB.syncWithServer();
         window.EggifyDB.syncHeaderStatus();
         renderAuthState();
         showToast(`เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ ${res.user.name}`);
       } else {
+        showAuthError(res.message);
         showToast(res.message);
       }
     });
@@ -148,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (regForm) {
     regForm.addEventListener('submit', async e => {
       e.preventDefault();
+      showAuthError('');
       const payload = {
         name: document.getElementById('regName').value,
         email: document.getElementById('regEmail').value,
@@ -157,10 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       const res = await window.EggifyDB.register(payload);
       if (res.ok) {
+        await window.EggifyDB.syncWithServer();
         window.EggifyDB.syncHeaderStatus();
         renderAuthState();
         showToast(`สมัครสมาชิกสำเร็จ! ยินดีต้อนรับ ${res.user.name}`);
       } else {
+        showAuthError(res.message);
         showToast(res.message);
       }
     });

@@ -24,6 +24,18 @@ function showToast(message) {
   showToast.timer = setTimeout(() => toast.classList.remove("show"), 2400);
 }
 
+function showAdminAuthError(msg) {
+  const errBox = $("adminAuthError");
+  if (!errBox) return;
+  if (msg) {
+    errBox.textContent = msg;
+    errBox.classList.remove("hidden");
+  } else {
+    errBox.textContent = "";
+    errBox.classList.add("hidden");
+  }
+}
+
 function updateAdminProfileBadge() {
   if (!window.EggifyDB) return;
   const user = window.EggifyDB.getCurrentUser();
@@ -33,12 +45,39 @@ function updateAdminProfileBadge() {
       ? "เชื่อมต่อ SQLite Server ออนไลน์"
       : "ฐานข้อมูลพร้อมใช้งาน (Synced)";
   }
-  if (user) {
+  if (user && user.role === "admin") {
     const ch = user.name.trim().charAt(0).toUpperCase();
     if ($("adminSidebarAvatar")) $("adminSidebarAvatar").textContent = ch;
     if ($("adminTopAvatar")) $("adminTopAvatar").textContent = ch;
     if ($("adminSidebarName")) $("adminSidebarName").textContent = user.name;
-    if ($("adminSidebarRole")) $("adminSidebarRole").textContent = user.role === "admin" ? "Administrator" : "Member";
+    if ($("adminSidebarRole")) $("adminSidebarRole").textContent = "Administrator";
+  }
+}
+
+function checkAdminGate() {
+  if (!window.EggifyDB) return;
+  const user = window.EggifyDB.getCurrentUser();
+  const isAdmin = window.EggifyDB.isAdmin();
+  const nonAdminAlert = $("adminNonAdminAlert");
+
+  if (isAdmin) {
+    document.body.classList.add("admin-authenticated");
+    showAdminAuthError("");
+    if (nonAdminAlert) nonAdminAlert.classList.add("hidden");
+    updateAdminProfileBadge();
+    renderDashboard();
+    renderProducts();
+    renderOrders();
+    runSystemQACheck();
+  } else {
+    document.body.classList.remove("admin-authenticated");
+    if (nonAdminAlert) {
+      if (user) {
+        nonAdminAlert.classList.remove("hidden");
+      } else {
+        nonAdminAlert.classList.add("hidden");
+      }
+    }
   }
 }
 
@@ -330,17 +369,78 @@ $("ordersTable").addEventListener("change", async e => {
   showToast(`อัปเดตสถานะคำสั่งซื้อ ${id} เป็น "${e.target.value}" แล้ว`);
 });
 
+function setupAdminAuthListeners() {
+  const toggleBtn = $("toggleAdminPassword");
+  const pwInput = $("adminPasswordInput");
+  if (toggleBtn && pwInput) {
+    toggleBtn.addEventListener("click", () => {
+      const hidden = pwInput.type === "password";
+      pwInput.type = hidden ? "text" : "password";
+      toggleBtn.textContent = hidden ? "🙈" : "👁️";
+    });
+  }
+
+  const loginForm = $("adminLoginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      showAdminAuthError("");
+      const email = ($("adminEmailInput")?.value || "").trim();
+      const password = $("adminPasswordInput")?.value || "";
+      const submitBtn = $("adminLoginSubmitBtn");
+
+      if (!email || !password) {
+        showAdminAuthError("กรุณากรอกอีเมลและรหัสผ่านผู้ดูแลระบบ");
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "กำลังตรวจสอบสิทธิ์ Admin...";
+      }
+
+      try {
+        const res = await window.EggifyDB.login(email, password);
+        if (!res || !res.ok || !res.user) {
+          showAdminAuthError((res && res.message) || "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+          return;
+        }
+        if (res.user.role !== "admin") {
+          await window.EggifyDB.logout();
+          showAdminAuthError("บัญชีนี้เป็นสมาชิกทั่วไป (Customer) ไม่สามารถเข้าใช้งานระบบหลังบ้าน Admin ได้");
+          checkAdminGate();
+          return;
+        }
+        if (pwInput) pwInput.value = "";
+        await window.EggifyDB.syncWithServer();
+        checkAdminGate();
+        showToast("เข้าสู่ระบบผู้ดูแลร้านสำเร็จ");
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "🔐 เข้าสู่ระบบ Admin";
+        }
+      }
+    });
+  }
+
+  const handleLogout = async () => {
+    await window.EggifyDB.logout();
+    if ($("sidebar")) $("sidebar").classList.remove("open");
+    checkAdminGate();
+    showToast("ออกจากระบบผู้ดูแลร้านแล้ว");
+    const emailEl = $("adminEmailInput");
+    if (emailEl) emailEl.focus();
+  };
+
+  if ($("adminLogoutBtn")) $("adminLogoutBtn").addEventListener("click", handleLogout);
+  if ($("adminTopLogoutBtn")) $("adminTopLogoutBtn").addEventListener("click", handleLogout);
+}
+
 window.addEventListener("eggify:synced", () => {
-  updateAdminProfileBadge();
-  renderDashboard();
-  renderProducts();
-  renderOrders();
-  runSystemQACheck();
+  checkAdminGate();
 });
 
-// เริ่มต้นระบบ
-updateAdminProfileBadge();
-renderDashboard();
-renderProducts();
-renderOrders();
-runSystemQACheck();
+// เริ่มต้นระบบพร้อมล็อกสิทธิ์ Admin เท่านั้น
+setupAdminAuthListeners();
+checkAdminGate();

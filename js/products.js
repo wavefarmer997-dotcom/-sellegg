@@ -98,35 +98,41 @@ function renderCatalog() {
   }
 
   grid.innerHTML = list
-    .map(
-      item => `
+    .map(item => {
+      const stock = Number(item.stock ?? 0);
+      const stockClass = stock <= 0 ? 'out' : stock <= 5 ? 'low' : '';
+      const stockLabel = stock <= 0 ? 'สินค้าหมด' : stock <= 5 ? `ใกล้หมด (${stock})` : `พร้อมส่ง (${stock})`;
+      return `
       <article class="product-card">
         <div class="product-thumb" onclick="openCatalogModal('${item.id}')" style="cursor:pointer;" title="คลิกเพื่อดูรายละเอียดสินค้า">
           <span class="product-badge">${item.badge}</span>
           ${window.EggifyDB.renderEggGraphic(item.eggType)}
         </div>
         <div>
-          <span class="product-cat">${item.category} • ${item.unit} • คงเหลือ ${item.stock} ชิ้น</span>
+          <span class="product-cat">${item.category} • ${item.unit}</span>
           <h3 class="product-name">${item.name}</h3>
           <p class="product-meta">${item.description}</p>
         </div>
         <div class="product-bottom">
-          <div>
-            <span class="product-price">฿${item.price}</span>
-            <span class="price-unit">/ ${item.unit}</span>
+          <div class="product-price-row">
+            <div>
+              <span class="product-price">฿${item.price}</span>
+              <span class="price-unit">/ ${item.unit}</span>
+            </div>
+            <span class="stock-pill ${stockClass}">${stockLabel}</span>
           </div>
           <div class="product-action-row">
             <button type="button" class="btn-detail-view" onclick="openCatalogModal('${item.id}')">
               🔍 ดูรายละเอียด
             </button>
-            <button type="button" class="btn-add-cart" onclick="handleAddToCart('${item.id}', 1)">
-              <span>+ ใส่ตะกร้า</span>
+            <button type="button" class="btn-add-cart" ${stock <= 0 ? 'disabled' : ''} onclick="handleAddToCart('${item.id}', 1)">
+              <span>${stock <= 0 ? 'สินค้าหมด' : '+ ใส่ตะกร้า'}</span>
             </button>
           </div>
         </div>
       </article>
-    `
-    )
+    `;
+    })
     .join('');
 }
 

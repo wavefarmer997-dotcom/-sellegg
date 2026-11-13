@@ -360,6 +360,15 @@
     localStorage.setItem(key, JSON.stringify(value));
   }
 
+  function getAuthHeaders(extra = {}) {
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+    const headers = { ...extra };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    return headers;
+  }
+
   // ซิงค์กับ SQLite API Server อัตโนมัติเมื่อเปิดผ่าน Node.js Server
   async function syncWithServer() {
     if (window.location.protocol === 'file:') {
@@ -367,21 +376,32 @@
       return false;
     }
     try {
-      const res = await fetch('/api/bootstrap', { method: 'GET', headers: { 'Accept': 'application/json' } });
+      const res = await fetch('/api/bootstrap', {
+        method: 'GET',
+        headers: getAuthHeaders({ Accept: 'application/json' })
+      });
       if (!res.ok) return false;
       const data = await res.json();
       apiOnline = true;
+      if (data.user) {
+        writeJSON(STORAGE_KEYS.CURRENT_USER, data.user);
+      } else if (localStorage.getItem(STORAGE_KEYS.TOKEN)) {
+        // Token expired or invalid on server
+        localStorage.removeItem(STORAGE_KEYS.TOKEN);
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+      }
       if (Array.isArray(data.products) && data.products.length > 0) {
         const normalized = data.products.map(normalizeProduct);
         writeJSON(STORAGE_KEYS.PRODUCTS, normalized);
         writeJSON(STORAGE_KEYS.ADMIN_PRODUCTS, normalized);
       }
-      if (Array.isArray(data.orders)) {
+      if (Array.isArray(data.orders) && data.user) {
         writeJSON(STORAGE_KEYS.ORDERS, data.orders);
       }
-      if (Array.isArray(data.users)) {
+      if (Array.isArray(data.users) && data.users.length > 0) {
         writeJSON(STORAGE_KEYS.USERS, data.users);
       }
+      syncHeaderStatus();
       window.dispatchEvent(new CustomEvent('eggify:synced', { detail: { online: true } }));
       return true;
     } catch {
@@ -419,7 +439,7 @@
       try {
         await fetch(isEdit ? `/api/products/${id}` : '/api/products', {
           method: isEdit ? 'PUT' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify(merged)
         });
       } catch {
@@ -436,7 +456,10 @@
 
     if (apiOnline) {
       try {
-        await fetch(`/api/products/${numId}`, { method: 'DELETE' });
+        await fetch(`/api/products/${numId}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
       } catch {
         // fallback saved in localStorage
       }
@@ -629,7 +652,7 @@
       try {
         await fetch(`/api/orders/${encodeURIComponent(orderId)}/status`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({ status })
         });
       } catch {
@@ -639,6 +662,20 @@
     return orders;
   }
 
+  function getOrdersForCurrentUser() {
+    const user = getCurrentUser();
+    if (!user) return [];
+    const orders = getOrders();
+    if (user.role === 'admin') return orders;
+    const emailLower = String(user.email || '').trim().toLowerCase();
+    const nameLower = String(user.name || '').trim().toLowerCase();
+    return orders.filter(
+      o =>
+        (o.email && String(o.email).trim().toLowerCase() === emailLower) ||
+        (o.customer && String(o.customer).trim().toLowerCase() === nameLower)
+    );
+  }
+
   // ================= AUTHENTICATION =================
   function getUsers() {
     return readJSON(STORAGE_KEYS.USERS, INITIAL_USERS);
@@ -646,6 +683,11 @@
 
   function getCurrentUser() {
     return readJSON(STORAGE_KEYS.CURRENT_USER, null);
+  }
+
+  function isAdmin() {
+    const user = getCurrentUser();
+    return Boolean(user && user.role === 'admin');
   }
 
   async function login(email, password) {
@@ -756,8 +798,16 @@
   }
 
   function logout() {
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+    if (apiOnline && token) {
+      fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      }).catch(() => {});
+    }
     localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
     localStorage.removeItem(STORAGE_KEYS.TOKEN);
+    syncHeaderStatus();
   }
 
   async function resetDatabase() {
@@ -765,7 +815,10 @@
     initLocalDatabase();
     if (apiOnline) {
       try {
-        await fetch('/api/reset', { method: 'POST' });
+        await fetch('/api/reset', {
+          method: 'POST',
+          headers: getAuthHeaders()
+        });
         await syncWithServer();
       } catch {
         // ignore
@@ -813,7 +866,14 @@
     `;
   }
 
-  // อัปเดตปุ่มผู้ใช้งานและจำนวนตะกร้าบน Navbar ของทุกหน้าโดยอัตโนมัติ
+  const DEFAULT_USER_ICON_SVG = `
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+      <circle cx="12" cy="7" r="4"></circle>
+    </svg>
+  `;
+
+  // อัปเดตปุ่มผู้ใช้งาน สิทธิ์ Admin และจำนวนตะกร้าบน Navbar ของทุกหน้าโดยอัตโนมัติ
   function syncHeaderStatus() {
     const totals = calculateCartTotals();
     document.querySelectorAll('#cartCountBadge, .js-cart-count').forEach(el => {
@@ -821,15 +881,28 @@
     });
 
     const user = getCurrentUser();
+    const adminLoggedIn = Boolean(user && user.role === 'admin');
+
+    // แสดงปุ่ม/เมนูสำหรับ Admin เท่านั้นเมื่อล็อกอินเป็น Admin
+    document.querySelectorAll('.js-admin-only').forEach(el => {
+      el.classList.toggle('is-admin-visible', adminLoggedIn);
+      if (adminLoggedIn) {
+        el.style.removeProperty('display');
+      } else {
+        el.style.display = 'none';
+      }
+    });
+
     const userLinks = document.querySelectorAll('.js-user-nav-btn');
     userLinks.forEach(btn => {
       if (user) {
-        btn.setAttribute('title', `เข้าสู่ระบบในชื่อ: ${user.name} (${user.role === 'admin' ? 'Admin' : 'สมาชิก'})`);
+        btn.setAttribute('title', `เข้าสู่ระบบในชื่อ: ${user.name} (${adminLoggedIn ? 'Admin' : 'สมาชิก'})`);
         btn.classList.add('logged-in-user');
-        btn.innerHTML = `<span style="font-weight:700;font-size:0.78rem;color:var(--brand-green);">${user.name.trim().charAt(0).toUpperCase()}</span>`;
+        btn.innerHTML = `<span style="font-weight:700;font-size:0.82rem;color:var(--brand-green);">${user.name.trim().charAt(0).toUpperCase()}</span>`;
       } else {
         btn.setAttribute('title', 'เข้าสู่ระบบ / สมัครสมาชิก');
         btn.classList.remove('logged-in-user');
+        btn.innerHTML = DEFAULT_USER_ICON_SVG;
       }
     });
   }
@@ -861,11 +934,13 @@
     clearCart,
     calculateCartTotals,
     getOrders,
+    getOrdersForCurrentUser,
     saveOrders,
     createOrder,
     updateOrderStatus,
     getUsers,
     getCurrentUser,
+    isAdmin,
     login,
     register,
     logout,
