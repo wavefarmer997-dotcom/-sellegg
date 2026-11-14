@@ -6,6 +6,7 @@
 
 const http = require('node:http');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { DatabaseSync } = require('node:sqlite');
@@ -14,7 +15,10 @@ const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 const ROOT_DIR = __dirname;
 const SCHEMA_PATH = path.join(ROOT_DIR, 'database', 'schema.sql');
-const DB_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || process.env.DATA_DIR || path.join(ROOT_DIR, 'database');
+const DB_DIR =
+  process.env.RAILWAY_VOLUME_MOUNT_PATH ||
+  process.env.DATA_DIR ||
+  (process.env.VERCEL ? path.join(os.tmpdir(), 'eggify-data') : path.join(ROOT_DIR, 'database'));
 const DB_PATH = process.env.DB_PATH || path.join(DB_DIR, 'eggify.db');
 
 if (!fs.existsSync(path.dirname(DB_PATH))) {
@@ -217,7 +221,7 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon'
 };
 
-const server = http.createServer(async (req, res) => {
+async function requestHandler(req, res) {
   if (req.method === 'OPTIONS') {
     return sendJSON(res, 200, { ok: true });
   }
@@ -469,13 +473,19 @@ const server = http.createServer(async (req, res) => {
     console.error('Server error:', err);
     sendJSON(res, 500, { ok: false, message: err.message });
   }
-});
+}
 
-server.listen(PORT, HOST, () => {
-  console.log('==============================================================');
-  console.log(`🥚 EGGIFY Online Web Server & SQLite DB is running!`);
-  console.log(`🌐 URL: http://localhost:${PORT} (host ${HOST})`);
-  console.log(`🗄️  SQLite Database: ${DB_PATH}`);
-  console.log('==============================================================');
-});
+const server = http.createServer(requestHandler);
+
+if (require.main === module) {
+  server.listen(PORT, HOST, () => {
+    console.log('==============================================================');
+    console.log(`🥚 EGGIFY Online Web Server & SQLite DB is running!`);
+    console.log(`🌐 URL: http://localhost:${PORT} (host ${HOST})`);
+    console.log(`🗄️  SQLite Database: ${DB_PATH}`);
+    console.log('==============================================================');
+  });
+}
+
+module.exports = requestHandler;
 
