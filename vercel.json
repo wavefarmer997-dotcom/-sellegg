@@ -1,17 +1,7 @@
 {
   "functions": {
-    "api/index.js": {
-      "includeFiles": "database/schema.sql"
+    "server.js": {
+      "includeFiles": "{*.html,*.css,*.js,css/**,js/**,database/schema.sql}"
     }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index.js"
-    },
-    {
-      "source": "/health",
-      "destination": "/api/index.js"
-    }
-  ]
+  }
 }
